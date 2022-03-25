@@ -7,8 +7,8 @@ import (
 	"os"
 
 	tfjson "github.com/hashicorp/terraform-json"
-	//"github.com/pmezard/go-difflib/difflib"
-	"github.com/google/go-cmp/cmp"
+	// "github.com/google/go-cmp/cmp"
+	"github.com/Cside/jsondiff"
 )
 func getResourceNames(report []*tfjson.ResourceChange) {
 	for _, i := range report {
@@ -19,10 +19,24 @@ func getResourceNames(report []*tfjson.ResourceChange) {
 }
 func getResourceDiff(report []*tfjson.ResourceChange) {
 	for _, i := range report {
-		if diff := cmp.Diff(i.Change.Before, i.Change.After); diff != "" {
-			fmt.Printf("```diff\n%s\n```\n", diff)
+		// cmpを使う場合
+		// if diff := cmp.Diff(i.Change.Before, i.Change.After); diff != "" {
+		// 	fmt.Printf("```diff\n%s\n```\n", diff)
+		// }
+		BeforeData, err := json.Marshal(i.Change.Before)
+		AfterData, err := json.Marshal(i.Change.After)
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
+		a := []byte(BeforeData)
+		b := []byte(AfterData)
+		if diff := jsondiff.Diff(a, b); diff != "" {
+			fmt.Printf("```diff\nresource %s %s\n%s\n```\n", i.Type, i.Name, diff)
+		}
+		
 	}
+	
 	return
 }
 func main() {

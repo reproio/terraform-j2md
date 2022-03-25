@@ -8,27 +8,33 @@
 <details><summary>Change details (Click me)</summary>
 
 ```diff
-  any(
-+ 	map[string]any{"triggers": nil},
-  )
-
+resource null_resource aaa
+- null
++ {
++   "triggers": null
++ }
 ```
 ```diff
-  any(
-+ 	map[string]any{"triggers": nil},
-  )
-
+resource null_resource bbb
+- null
++ {
++   "triggers": null
++ }
 ```
 ```diff
-  any(
-- 	map[string]any{"id": string("5480444040244548212"), "triggers": nil},
-  )
-
+resource null_resource eee
+- {
+-   "id": "5480444040244548212",
+-   "triggers": null
+- }
++ null
 ```
 ```diff
-  any(
-- 	map[string]any{"id": string("6136636772109947887"), "triggers": nil},
-  )
-
+resource null_resource fff
+- {
+-   "id": "6136636772109947887",
+-   "triggers": null
+- }
++ null
 ```
 </details>
