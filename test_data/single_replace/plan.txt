@@ -1,0 +1,24 @@
+local_file.bar: Refreshing state... [id=3811e1a645e5371113584e6d18ff4843378ae590]
+local_file.foo: Refreshing state... [id=4bf3e335199107182c6f7638efaad377acc7f452]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # local_file.foo must be replaced
+-/+ resource "local_file" "foo" {
+      ~ content              = "foo!" -> "foo!!!!" # forces replacement
+      ~ id                   = "4bf3e335199107182c6f7638efaad377acc7f452" -> (known after apply)
+        # (3 unchanged attributes hidden)
+    }
+
+Plan: 1 to add, 0 to change, 1 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: /tmp/tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "/tmp/tfplan"

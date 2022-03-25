@@ -23,13 +23,13 @@ func RunTestMain(inputFile string) {
 }
 
 func ExampleNoChanges() {
-	RunTestMain("test_data/empty.json")
+	RunTestMain("test_data/no_changes/show.json")
 	// Output:
 	// 0 to add, 0 to change, 0 to destroy.
 }
 
 func ExampleAdd() {
-	RunTestMain("test_data/add.json")
+	RunTestMain("test_data/single_add/show.json")
 	// Output:
 	// 1 to add, 0 to change, 0 to destroy.
 	//
@@ -48,7 +48,7 @@ func ExampleAdd() {
 }
 
 func ExampleDestroy() {
-	RunTestMain("test_data/destroy.json")
+	RunTestMain("test_data/single_destroy/show.json")
 	// Output:
 	// 0 to add, 0 to change, 1 to destroy.
 	//
