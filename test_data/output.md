@@ -9,32 +9,40 @@
 
 ```diff
 resource null_resource aaa
-- null
-+ {
-+   "triggers": null
-+ }
+@@ -1 +1,3 @@
+-null
++{
++  "triggers": null
++}
 ```
+
 ```diff
 resource null_resource bbb
-- null
-+ {
-+   "triggers": null
-+ }
+@@ -1 +1,3 @@
+-null
++{
++  "triggers": null
++}
 ```
+
 ```diff
 resource null_resource eee
-- {
--   "id": "5480444040244548212",
--   "triggers": null
-- }
-+ null
+@@ -1,4 +1 @@
+-{
+-  "id": "5480444040244548212",
+-  "triggers": null
+-}
++null
 ```
+
 ```diff
 resource null_resource fff
-- {
--   "id": "6136636772109947887",
--   "triggers": null
-- }
-+ null
+@@ -1,4 +1 @@
+-{
+-  "id": "6136636772109947887",
+-  "triggers": null
+-}
++null
 ```
+
 </details>
