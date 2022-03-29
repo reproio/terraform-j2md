@@ -61,7 +61,6 @@ func main() {
 		Replace []*tfjson.ResourceChange
 	}
 
-	//fmt.Println(plan.TerraformVersion)
 	for _, c := range plan.ResourceChanges {
 		if c.Change.Actions.NoOp() {
 			continue
@@ -82,7 +81,6 @@ func main() {
 			report.Replace = append(report.Replace, c)
 		}
 		diff += getResourceDiff(c)
-		
 	}
 
 	addCount := len(report.Add) + len(report.Replace)
@@ -107,8 +105,10 @@ func main() {
 		body += getResourceNames(report.Replace)
 	}
 
-	//展開して差分を表示する
-	body += fmt.Sprintf("<details><summary>Change details (Click me)</summary>\n%s\n</details>", diff)
+	// 展開して差分を表示
+	if len(diff) != 0 {
+		body += fmt.Sprintf("<details><summary>Change details (Click me)</summary>\n%s\n</details>", diff)
+	} 
 
 	fmt.Printf("%s\n", body)
 }
