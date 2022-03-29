@@ -36,9 +36,9 @@
           "provider_name": "registry.terraform.io/hashicorp/aws",
           "schema_version": 0,
           "values": {
-            "arn": "arn:aws:ec2:ap-northeast-1:121603640129:internet-gateway/igw-0edc99b3ee0ed84ad",
+            "arn": "arn:aws:ec2:ap-northeast-1:999999999999:internet-gateway/igw-0edc99b3ee0ed84ad",
             "id": "igw-0edc99b3ee0ed84ad",
-            "owner_id": "121603640129",
+            "owner_id": "999999999999",
             "tags": {},
             "tags_all": {},
             "vpc_id": "vpc-0c08ee65bf93a360f"
@@ -56,13 +56,13 @@
           "provider_name": "registry.terraform.io/hashicorp/aws",
           "schema_version": 1,
           "values": {
-            "arn": "arn:aws:ec2:ap-northeast-1:121603640129:key-pair/id_rsa_ec2",
+            "arn": "arn:aws:ec2:ap-northeast-1:999999999999:key-pair/id_rsa_ec2",
             "fingerprint": "f9:95:17:a6:4d:1d:be:60:54:fa:a5:51:df:16:40:56",
             "id": "id_rsa_ec2",
             "key_name": "id_rsa_ec2",
             "key_name_prefix": "",
             "key_pair_id": "key-0f1fe4f4c50caede6",
-            "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCk3z09ayFaQXfbGf07TgjiJhiIZs0X7gThIns1vHZu14beY2VgM1RKwUpIWlZ6+IdmRzB/Bam26pOgbMubAmDf5RBGB07dzRmS4rfDF9W117bV2d/Pt09ivIkWAQHkNK7+nGTHcJ/3Pye7t5zgpn3e2Gwa2Ta6GxBy+QY9dZCSN4pJxIq40l3jhY21Q0nxz1vrNSOxqw1SCVR5tWI6AubwnrhZjKQvrrgeI5gTU6pZ+BTJVH1CcFHm00FM+iWIv1JLxlpTQIrjnKDgW7nuWybndi1dv5m5pBol+8iKqczBQGOUuPBOf4O/PKzS2sLSqVZsHOf5b9D3DqIV+I7fWtKf7S3SHs6Sz6zhZGUx9f0yMhmgIoTIfTkTgyGdn1mh+VIoarT+73n9JRragVUS/MM+Psd8ADCxK63E5NswwDU+K5RDtstP4afgzkGlO0FSvUNwllplvs8w3vMdrxvL0MZLb4tKJaupoaupoKTsIC95o0sOriQZURCT1shA3Ax9qrE= stf03108@MAC679.local",
+            "public_key": "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
             "tags": {},
             "tags_all": {}
           },
@@ -198,7 +198,7 @@
           "provider_name": "registry.terraform.io/hashicorp/aws",
           "schema_version": 1,
           "values": {
-            "arn": "arn:aws:ec2:ap-northeast-1:121603640129:subnet/subnet-0342dca4d2a611266",
+            "arn": "arn:aws:ec2:ap-northeast-1:999999999999:subnet/subnet-0342dca4d2a611266",
             "assign_ipv6_address_on_creation": false,
             "availability_zone": "ap-northeast-1a",
             "availability_zone_id": "apne1-az4",
@@ -214,7 +214,7 @@
             "map_customer_owned_ip_on_launch": false,
             "map_public_ip_on_launch": false,
             "outpost_arn": "",
-            "owner_id": "121603640129",
+            "owner_id": "999999999999",
             "private_dns_hostname_type_on_launch": "ip-name",
             "tags": {
               "Name": "test_subnet1"
@@ -238,7 +238,7 @@
           "provider_name": "registry.terraform.io/hashicorp/aws",
           "schema_version": 1,
           "values": {
-            "arn": "arn:aws:ec2:ap-northeast-1:121603640129:vpc/vpc-0c08ee65bf93a360f",
+            "arn": "arn:aws:ec2:ap-northeast-1:999999999999:vpc/vpc-0c08ee65bf93a360f",
             "assign_generated_ipv6_cidr_block": false,
             "cidr_block": "10.1.0.0/16",
             "default_network_acl_id": "acl-044c353daa9d7d946",
@@ -259,7 +259,7 @@
             "ipv6_ipam_pool_id": "",
             "ipv6_netmask_length": 0,
             "main_route_table_id": "rtb-024550946eba617ac",
-            "owner_id": "121603640129",
+            "owner_id": "999999999999",
             "tags": {},
             "tags_all": {}
           },
@@ -283,17 +283,17 @@
           "update"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:internet-gateway/igw-0edc99b3ee0ed84ad",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:internet-gateway/igw-0edc99b3ee0ed84ad",
           "id": "igw-0edc99b3ee0ed84ad",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": null,
           "tags_all": {},
           "vpc_id": "vpc-0c08ee65bf93a360f"
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:internet-gateway/igw-0edc99b3ee0ed84ad",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:internet-gateway/igw-0edc99b3ee0ed84ad",
           "id": "igw-0edc99b3ee0ed84ad",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": {},
           "tags_all": {},
           "vpc_id": "vpc-0c08ee65bf93a360f"
@@ -319,24 +319,24 @@
           "update"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:key-pair/id_rsa_ec2",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:key-pair/id_rsa_ec2",
           "fingerprint": "f9:95:17:a6:4d:1d:be:60:54:fa:a5:51:df:16:40:56",
           "id": "id_rsa_ec2",
           "key_name": "id_rsa_ec2",
           "key_name_prefix": "",
           "key_pair_id": "key-0f1fe4f4c50caede6",
-          "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCk3z09ayFaQXfbGf07TgjiJhiIZs0X7gThIns1vHZu14beY2VgM1RKwUpIWlZ6+IdmRzB/Bam26pOgbMubAmDf5RBGB07dzRmS4rfDF9W117bV2d/Pt09ivIkWAQHkNK7+nGTHcJ/3Pye7t5zgpn3e2Gwa2Ta6GxBy+QY9dZCSN4pJxIq40l3jhY21Q0nxz1vrNSOxqw1SCVR5tWI6AubwnrhZjKQvrrgeI5gTU6pZ+BTJVH1CcFHm00FM+iWIv1JLxlpTQIrjnKDgW7nuWybndi1dv5m5pBol+8iKqczBQGOUuPBOf4O/PKzS2sLSqVZsHOf5b9D3DqIV+I7fWtKf7S3SHs6Sz6zhZGUx9f0yMhmgIoTIfTkTgyGdn1mh+VIoarT+73n9JRragVUS/MM+Psd8ADCxK63E5NswwDU+K5RDtstP4afgzkGlO0FSvUNwllplvs8w3vMdrxvL0MZLb4tKJaupoaupoKTsIC95o0sOriQZURCT1shA3Ax9qrE= stf03108@MAC679.local",
+          "public_key": "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
           "tags": null,
           "tags_all": {}
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:key-pair/id_rsa_ec2",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:key-pair/id_rsa_ec2",
           "fingerprint": "f9:95:17:a6:4d:1d:be:60:54:fa:a5:51:df:16:40:56",
           "id": "id_rsa_ec2",
           "key_name": "id_rsa_ec2",
           "key_name_prefix": "",
           "key_pair_id": "key-0f1fe4f4c50caede6",
-          "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCk3z09ayFaQXfbGf07TgjiJhiIZs0X7gThIns1vHZu14beY2VgM1RKwUpIWlZ6+IdmRzB/Bam26pOgbMubAmDf5RBGB07dzRmS4rfDF9W117bV2d/Pt09ivIkWAQHkNK7+nGTHcJ/3Pye7t5zgpn3e2Gwa2Ta6GxBy+QY9dZCSN4pJxIq40l3jhY21Q0nxz1vrNSOxqw1SCVR5tWI6AubwnrhZjKQvrrgeI5gTU6pZ+BTJVH1CcFHm00FM+iWIv1JLxlpTQIrjnKDgW7nuWybndi1dv5m5pBol+8iKqczBQGOUuPBOf4O/PKzS2sLSqVZsHOf5b9D3DqIV+I7fWtKf7S3SHs6Sz6zhZGUx9f0yMhmgIoTIfTkTgyGdn1mh+VIoarT+73n9JRragVUS/MM+Psd8ADCxK63E5NswwDU+K5RDtstP4afgzkGlO0FSvUNwllplvs8w3vMdrxvL0MZLb4tKJaupoaupoKTsIC95o0sOriQZURCT1shA3Ax9qrE= stf03108@MAC679.local",
+          "public_key": "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
           "tags": {},
           "tags_all": {}
         },
@@ -361,7 +361,7 @@
           "update"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:security-group/sg-05bf69021f9e927aa",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:security-group/sg-05bf69021f9e927aa",
           "description": "test",
           "egress": [
             {
@@ -396,7 +396,7 @@
           ],
           "name": "admin",
           "name_prefix": "",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "revoke_rules_on_delete": false,
           "tags": null,
           "tags_all": {},
@@ -404,7 +404,7 @@
           "vpc_id": "vpc-0c08ee65bf93a360f"
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:security-group/sg-05bf69021f9e927aa",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:security-group/sg-05bf69021f9e927aa",
           "description": "test",
           "egress": [
             {
@@ -439,7 +439,7 @@
           ],
           "name": "admin",
           "name_prefix": "",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "revoke_rules_on_delete": false,
           "tags": {},
           "tags_all": {},
@@ -507,7 +507,7 @@
           "update"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:vpc/vpc-0c08ee65bf93a360f",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:vpc/vpc-0c08ee65bf93a360f",
           "assign_generated_ipv6_cidr_block": false,
           "cidr_block": "10.1.0.0/16",
           "default_network_acl_id": "acl-044c353daa9d7d946",
@@ -528,12 +528,12 @@
           "ipv6_ipam_pool_id": "",
           "ipv6_netmask_length": 0,
           "main_route_table_id": "rtb-024550946eba617ac",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": null,
           "tags_all": {}
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:vpc/vpc-0c08ee65bf93a360f",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:vpc/vpc-0c08ee65bf93a360f",
           "assign_generated_ipv6_cidr_block": false,
           "cidr_block": "10.1.0.0/16",
           "default_network_acl_id": "acl-044c353daa9d7d946",
@@ -554,7 +554,7 @@
           "ipv6_ipam_pool_id": "",
           "ipv6_netmask_length": 0,
           "main_route_table_id": "rtb-024550946eba617ac",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": {},
           "tags_all": {}
         },
@@ -582,7 +582,7 @@
         ],
         "before": {
           "ami": "ami-cbf90ecb",
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:instance/i-0ecc384fa6f8d0623",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:instance/i-0ecc384fa6f8d0623",
           "associate_public_ip_address": false,
           "availability_zone": "ap-northeast-1a",
           "capacity_reservation_specification": [
@@ -722,17 +722,17 @@
           "no-op"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:internet-gateway/igw-0edc99b3ee0ed84ad",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:internet-gateway/igw-0edc99b3ee0ed84ad",
           "id": "igw-0edc99b3ee0ed84ad",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": {},
           "tags_all": {},
           "vpc_id": "vpc-0c08ee65bf93a360f"
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:internet-gateway/igw-0edc99b3ee0ed84ad",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:internet-gateway/igw-0edc99b3ee0ed84ad",
           "id": "igw-0edc99b3ee0ed84ad",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": {},
           "tags_all": {},
           "vpc_id": "vpc-0c08ee65bf93a360f"
@@ -759,24 +759,24 @@
           "no-op"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:key-pair/id_rsa_ec2",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:key-pair/id_rsa_ec2",
           "fingerprint": "f9:95:17:a6:4d:1d:be:60:54:fa:a5:51:df:16:40:56",
           "id": "id_rsa_ec2",
           "key_name": "id_rsa_ec2",
           "key_name_prefix": "",
           "key_pair_id": "key-0f1fe4f4c50caede6",
-          "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCk3z09ayFaQXfbGf07TgjiJhiIZs0X7gThIns1vHZu14beY2VgM1RKwUpIWlZ6+IdmRzB/Bam26pOgbMubAmDf5RBGB07dzRmS4rfDF9W117bV2d/Pt09ivIkWAQHkNK7+nGTHcJ/3Pye7t5zgpn3e2Gwa2Ta6GxBy+QY9dZCSN4pJxIq40l3jhY21Q0nxz1vrNSOxqw1SCVR5tWI6AubwnrhZjKQvrrgeI5gTU6pZ+BTJVH1CcFHm00FM+iWIv1JLxlpTQIrjnKDgW7nuWybndi1dv5m5pBol+8iKqczBQGOUuPBOf4O/PKzS2sLSqVZsHOf5b9D3DqIV+I7fWtKf7S3SHs6Sz6zhZGUx9f0yMhmgIoTIfTkTgyGdn1mh+VIoarT+73n9JRragVUS/MM+Psd8ADCxK63E5NswwDU+K5RDtstP4afgzkGlO0FSvUNwllplvs8w3vMdrxvL0MZLb4tKJaupoaupoKTsIC95o0sOriQZURCT1shA3Ax9qrE= stf03108@MAC679.local",
+          "public_key": "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
           "tags": {},
           "tags_all": {}
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:key-pair/id_rsa_ec2",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:key-pair/id_rsa_ec2",
           "fingerprint": "f9:95:17:a6:4d:1d:be:60:54:fa:a5:51:df:16:40:56",
           "id": "id_rsa_ec2",
           "key_name": "id_rsa_ec2",
           "key_name_prefix": "",
           "key_pair_id": "key-0f1fe4f4c50caede6",
-          "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCk3z09ayFaQXfbGf07TgjiJhiIZs0X7gThIns1vHZu14beY2VgM1RKwUpIWlZ6+IdmRzB/Bam26pOgbMubAmDf5RBGB07dzRmS4rfDF9W117bV2d/Pt09ivIkWAQHkNK7+nGTHcJ/3Pye7t5zgpn3e2Gwa2Ta6GxBy+QY9dZCSN4pJxIq40l3jhY21Q0nxz1vrNSOxqw1SCVR5tWI6AubwnrhZjKQvrrgeI5gTU6pZ+BTJVH1CcFHm00FM+iWIv1JLxlpTQIrjnKDgW7nuWybndi1dv5m5pBol+8iKqczBQGOUuPBOf4O/PKzS2sLSqVZsHOf5b9D3DqIV+I7fWtKf7S3SHs6Sz6zhZGUx9f0yMhmgIoTIfTkTgyGdn1mh+VIoarT+73n9JRragVUS/MM+Psd8ADCxK63E5NswwDU+K5RDtstP4afgzkGlO0FSvUNwllplvs8w3vMdrxvL0MZLb4tKJaupoaupoKTsIC95o0sOriQZURCT1shA3Ax9qrE= stf03108@MAC679.local",
+          "public_key": "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
           "tags": {},
           "tags_all": {}
         },
@@ -879,7 +879,7 @@
           "create"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:security-group/sg-05bf69021f9e927aa",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:security-group/sg-05bf69021f9e927aa",
           "description": "test",
           "egress": [
             {
@@ -914,7 +914,7 @@
           ],
           "name": "admin",
           "name_prefix": "",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "revoke_rules_on_delete": false,
           "tags": {},
           "tags_all": {},
@@ -1052,7 +1052,7 @@
           "update"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:subnet/subnet-0342dca4d2a611266",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:subnet/subnet-0342dca4d2a611266",
           "assign_ipv6_address_on_creation": false,
           "availability_zone": "ap-northeast-1a",
           "availability_zone_id": "apne1-az4",
@@ -1068,7 +1068,7 @@
           "map_customer_owned_ip_on_launch": false,
           "map_public_ip_on_launch": false,
           "outpost_arn": "",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "private_dns_hostname_type_on_launch": "ip-name",
           "tags": {
             "Name": "test_subnet"
@@ -1080,7 +1080,7 @@
           "vpc_id": "vpc-0c08ee65bf93a360f"
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:subnet/subnet-0342dca4d2a611266",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:subnet/subnet-0342dca4d2a611266",
           "assign_ipv6_address_on_creation": false,
           "availability_zone": "ap-northeast-1a",
           "availability_zone_id": "apne1-az4",
@@ -1096,7 +1096,7 @@
           "map_customer_owned_ip_on_launch": false,
           "map_public_ip_on_launch": false,
           "outpost_arn": "",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "private_dns_hostname_type_on_launch": "ip-name",
           "tags": {
             "Name": "test_subnet1"
@@ -1129,7 +1129,7 @@
           "no-op"
         ],
         "before": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:vpc/vpc-0c08ee65bf93a360f",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:vpc/vpc-0c08ee65bf93a360f",
           "assign_generated_ipv6_cidr_block": false,
           "cidr_block": "10.1.0.0/16",
           "default_network_acl_id": "acl-044c353daa9d7d946",
@@ -1150,12 +1150,12 @@
           "ipv6_ipam_pool_id": "",
           "ipv6_netmask_length": 0,
           "main_route_table_id": "rtb-024550946eba617ac",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": {},
           "tags_all": {}
         },
         "after": {
-          "arn": "arn:aws:ec2:ap-northeast-1:121603640129:vpc/vpc-0c08ee65bf93a360f",
+          "arn": "arn:aws:ec2:ap-northeast-1:999999999999:vpc/vpc-0c08ee65bf93a360f",
           "assign_generated_ipv6_cidr_block": false,
           "cidr_block": "10.1.0.0/16",
           "default_network_acl_id": "acl-044c353daa9d7d946",
@@ -1176,7 +1176,7 @@
           "ipv6_ipam_pool_id": "",
           "ipv6_netmask_length": 0,
           "main_route_table_id": "rtb-024550946eba617ac",
-          "owner_id": "121603640129",
+          "owner_id": "999999999999",
           "tags": {},
           "tags_all": {}
         },
@@ -1225,7 +1225,7 @@
             "schema_version": 1,
             "values": {
               "ami": "ami-cbf90ecb",
-              "arn": "arn:aws:ec2:ap-northeast-1:121603640129:instance/i-0ecc384fa6f8d0623",
+              "arn": "arn:aws:ec2:ap-northeast-1:999999999999:instance/i-0ecc384fa6f8d0623",
               "associate_public_ip_address": false,
               "availability_zone": "ap-northeast-1a",
               "capacity_reservation_specification": [
@@ -1362,9 +1362,9 @@
             "provider_name": "registry.terraform.io/hashicorp/aws",
             "schema_version": 0,
             "values": {
-              "arn": "arn:aws:ec2:ap-northeast-1:121603640129:internet-gateway/igw-0edc99b3ee0ed84ad",
+              "arn": "arn:aws:ec2:ap-northeast-1:999999999999:internet-gateway/igw-0edc99b3ee0ed84ad",
               "id": "igw-0edc99b3ee0ed84ad",
-              "owner_id": "121603640129",
+              "owner_id": "999999999999",
               "tags": {},
               "tags_all": {},
               "vpc_id": "vpc-0c08ee65bf93a360f"
@@ -1385,13 +1385,13 @@
             "provider_name": "registry.terraform.io/hashicorp/aws",
             "schema_version": 1,
             "values": {
-              "arn": "arn:aws:ec2:ap-northeast-1:121603640129:key-pair/id_rsa_ec2",
+              "arn": "arn:aws:ec2:ap-northeast-1:999999999999:key-pair/id_rsa_ec2",
               "fingerprint": "f9:95:17:a6:4d:1d:be:60:54:fa:a5:51:df:16:40:56",
               "id": "id_rsa_ec2",
               "key_name": "id_rsa_ec2",
               "key_name_prefix": "",
               "key_pair_id": "key-0f1fe4f4c50caede6",
-              "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCk3z09ayFaQXfbGf07TgjiJhiIZs0X7gThIns1vHZu14beY2VgM1RKwUpIWlZ6+IdmRzB/Bam26pOgbMubAmDf5RBGB07dzRmS4rfDF9W117bV2d/Pt09ivIkWAQHkNK7+nGTHcJ/3Pye7t5zgpn3e2Gwa2Ta6GxBy+QY9dZCSN4pJxIq40l3jhY21Q0nxz1vrNSOxqw1SCVR5tWI6AubwnrhZjKQvrrgeI5gTU6pZ+BTJVH1CcFHm00FM+iWIv1JLxlpTQIrjnKDgW7nuWybndi1dv5m5pBol+8iKqczBQGOUuPBOf4O/PKzS2sLSqVZsHOf5b9D3DqIV+I7fWtKf7S3SHs6Sz6zhZGUx9f0yMhmgIoTIfTkTgyGdn1mh+VIoarT+73n9JRragVUS/MM+Psd8ADCxK63E5NswwDU+K5RDtstP4afgzkGlO0FSvUNwllplvs8w3vMdrxvL0MZLb4tKJaupoaupoKTsIC95o0sOriQZURCT1shA3Ax9qrE= stf03108@MAC679.local",
+              "public_key": "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
               "tags": {},
               "tags_all": {}
             },
@@ -1408,7 +1408,7 @@
             "provider_name": "registry.terraform.io/hashicorp/aws",
             "schema_version": 1,
             "values": {
-              "arn": "arn:aws:ec2:ap-northeast-1:121603640129:security-group/sg-05bf69021f9e927aa",
+              "arn": "arn:aws:ec2:ap-northeast-1:999999999999:security-group/sg-05bf69021f9e927aa",
               "description": "test",
               "egress": [
                 {
@@ -1443,7 +1443,7 @@
               ],
               "name": "admin",
               "name_prefix": "",
-              "owner_id": "121603640129",
+              "owner_id": "999999999999",
               "revoke_rules_on_delete": false,
               "tags": {},
               "tags_all": {},
@@ -1486,7 +1486,7 @@
             "provider_name": "registry.terraform.io/hashicorp/aws",
             "schema_version": 1,
             "values": {
-              "arn": "arn:aws:ec2:ap-northeast-1:121603640129:subnet/subnet-0342dca4d2a611266",
+              "arn": "arn:aws:ec2:ap-northeast-1:999999999999:subnet/subnet-0342dca4d2a611266",
               "assign_ipv6_address_on_creation": false,
               "availability_zone": "ap-northeast-1a",
               "availability_zone_id": "apne1-az4",
@@ -1502,7 +1502,7 @@
               "map_customer_owned_ip_on_launch": false,
               "map_public_ip_on_launch": false,
               "outpost_arn": "",
-              "owner_id": "121603640129",
+              "owner_id": "999999999999",
               "private_dns_hostname_type_on_launch": "ip-name",
               "tags": {
                 "Name": "test_subnet"
@@ -1529,7 +1529,7 @@
             "provider_name": "registry.terraform.io/hashicorp/aws",
             "schema_version": 1,
             "values": {
-              "arn": "arn:aws:ec2:ap-northeast-1:121603640129:vpc/vpc-0c08ee65bf93a360f",
+              "arn": "arn:aws:ec2:ap-northeast-1:999999999999:vpc/vpc-0c08ee65bf93a360f",
               "assign_generated_ipv6_cidr_block": false,
               "cidr_block": "10.1.0.0/16",
               "default_network_acl_id": "acl-044c353daa9d7d946",
@@ -1550,7 +1550,7 @@
               "ipv6_ipam_pool_id": "",
               "ipv6_netmask_length": 0,
               "main_route_table_id": "rtb-024550946eba617ac",
-              "owner_id": "121603640129",
+              "owner_id": "999999999999",
               "tags": {},
               "tags_all": {}
             },
