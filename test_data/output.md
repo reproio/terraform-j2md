@@ -1,14 +1,14 @@
 ### 2 to add, 0 to change, 2 to destroy.
 - add
-	- null_resource.aaa 
-	- null_resource.bbb 
+	- null_resource.aaa
+	- null_resource.bbb
 - destroy
-	- null_resource.eee 
-	- null_resource.fff 
+	- null_resource.eee
+	- null_resource.fff
 <details><summary>Change details (Click me)</summary>
 
 ```diff
-resource null_resource aaa
+# null_resource.aaa will be created
 @@ -1 +1,3 @@
 -null
 +{
@@ -17,7 +17,7 @@ resource null_resource aaa
 ```
 
 ```diff
-resource null_resource bbb
+# null_resource.bbb will be created
 @@ -1 +1,3 @@
 -null
 +{
@@ -26,7 +26,7 @@ resource null_resource bbb
 ```
 
 ```diff
-resource null_resource eee
+# null_resource.eee will be destroyed
 @@ -1,4 +1 @@
 -{
 -  "id": "5480444040244548212",
@@ -36,7 +36,7 @@ resource null_resource eee
 ```
 
 ```diff
-resource null_resource fff
+# null_resource.fff will be destroyed
 @@ -1,4 +1 @@
 -{
 -  "id": "6136636772109947887",

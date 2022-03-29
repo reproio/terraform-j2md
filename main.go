@@ -13,11 +13,22 @@ func getResourceNames(report []*tfjson.ResourceChange) string{
 	var body string
 	for _, i := range report {
 
-		body += fmt.Sprintf("\t- %s \n", i.Address)
+		body += fmt.Sprintf("\t- %s\n", i.Address)
 	}
 	return body
 }
 func getResourceDiff(report *tfjson.ResourceChange) string{
+	var message string
+	switch {
+	case report.Change.Actions.Create():
+		message = "will be created"
+	case report.Change.Actions.Update():
+		message = "will be updated in-place"
+	case report.Change.Actions.Delete():
+		message = "will be destroyed"
+	case report.Change.Actions.Replace():
+		message = "will be replaced"
+	}
 	BeforeData, err := json.MarshalIndent(report.Change.Before, "", "  ")
 	AfterData, err := json.MarshalIndent(report.Change.After, "", "  ")
 	if err != nil {
@@ -31,7 +42,7 @@ func getResourceDiff(report *tfjson.ResourceChange) string{
 		Context: 3,
 	}
 	diffText, _ := difflib.GetUnifiedDiffString(diff)
-	return fmt.Sprintf("\n```diff\nresource %s %s\n%s```\n", report.Type, report.Name, diffText)
+	return fmt.Sprintf("\n```diff\n# %s.%s %s\n%s```\n", report.Type, report.Name, message, diffText)
 }
 func main() {
 	var plan tfjson.Plan
@@ -71,6 +82,7 @@ func main() {
 			report.Replace = append(report.Replace, c)
 		}
 		diff += getResourceDiff(c)
+		
 	}
 
 	addCount := len(report.Add) + len(report.Replace)
