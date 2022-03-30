@@ -107,8 +107,8 @@ func main() {
 
 	// 展開して差分を表示
 	if len(diff) != 0 {
-		body += fmt.Sprintf("<details><summary>Change details (Click me)</summary>\n%s\n</details>", diff)
-	} 
-
-	fmt.Printf("%s\n", body)
+		body += fmt.Sprintf("<details><summary>Change details (Click me)</summary>\n%s\n</details>\n", diff)
+	}
+	
+	fmt.Print(body)
 }
