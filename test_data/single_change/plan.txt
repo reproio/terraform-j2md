@@ -1,0 +1,22 @@
+env_variable.test1: Refreshing state... [id=test1]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # env_variable.test1 will be updated in-place
+  ~ resource "env_variable" "test1" {
+        id   = "test1"
+      ~ name = "test1" -> "test1_changed"
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: /tmp/tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "/tmp/tfplan"

@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+
+# terraform test data
+.terraform
+*.tfstate.backup
+.terraform.lock.hcl
