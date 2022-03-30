@@ -9,15 +9,19 @@ import (
 	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/pmezard/go-difflib/difflib"
 )
-func getResourceNames(report []*tfjson.ResourceChange) string{
-	var body string
-	for _, i := range report {
 
-		body += fmt.Sprintf("\t- %s\n", i.Address)
+func listResourceNames(header string, report []*tfjson.ResourceChange) string {
+	if report == nil {
+		return ""
+	}
+
+	body := "- " + header + "\n"
+	for _, c := range report {
+		body += fmt.Sprintf("    - %s\n", c.Address)
 	}
 	return body
 }
-func getResourceDiff(report *tfjson.ResourceChange) string{
+func createResourceDiffString(report *tfjson.ResourceChange) string {
 	var message string
 	switch {
 	case report.Change.Actions.Create():
@@ -29,13 +33,16 @@ func getResourceDiff(report *tfjson.ResourceChange) string{
 	case report.Change.Actions.Replace():
 		message = "will be replaced"
 	}
-	BeforeData, err := json.MarshalIndent(report.Change.Before, "", "  ")
-	AfterData, err := json.MarshalIndent(report.Change.After, "", "  ")
+	beforeData, err := json.MarshalIndent(report.Change.Before, "", "  ")
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	a := string(BeforeData)
-	b := string(AfterData)
+	afterData, err := json.MarshalIndent(report.Change.After, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	a := string(beforeData)
+	b := string(afterData)
 	diff := difflib.UnifiedDiff{
 		A:       difflib.SplitLines(a),
 		B:       difflib.SplitLines(b),
@@ -62,53 +69,33 @@ func main() {
 	}
 
 	for _, c := range plan.ResourceChanges {
-		if c.Change.Actions.NoOp() {
+		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}
-		if c.Change.Actions.Read() {
-			continue
-		}
-		if c.Change.Actions.Create() {
+
+		switch {
+		case c.Change.Actions.Create():
 			report.Add = append(report.Add, c)
-		}
-		if c.Change.Actions.Update() {
+		case c.Change.Actions.Update():
 			report.Change = append(report.Change, c)
-		}
-		if c.Change.Actions.Delete() {
+		case c.Change.Actions.Delete():
 			report.Destroy = append(report.Destroy, c)
-		}
-		if c.Change.Actions.Replace() {
+		case c.Change.Actions.Replace():
 			report.Replace = append(report.Replace, c)
 		}
-		diff += getResourceDiff(c)
+		diff += createResourceDiffString(c)
 	}
 
-	addCount := len(report.Add) + len(report.Replace)
-	destroyCount := len(report.Destroy) + len(report.Replace)
-	body += fmt.Sprintf("### %d to add, %d to change, %d to destroy.\n", addCount, len(report.Change), destroyCount)
+	body += fmt.Sprintf("### %d to add, %d to change, %d to destroy.\n", len(report.Add)+len(report.Replace), len(report.Change), len(report.Destroy)+len(report.Replace))
 
-	// リソース名を表示
-	if report.Add != nil{
-		body += fmt.Sprintln("- add")
-		body += getResourceNames(report.Add)
-	}
-	if report.Change != nil{
-		body += fmt.Sprintln("- change")
-		body += getResourceNames(report.Change)
-	}
-	if report.Destroy != nil{
-		body += fmt.Sprintln("- destroy")
-		body += getResourceNames(report.Destroy)
-	}
-	if report.Replace != nil{
-		body += fmt.Sprintln("- replace")
-		body += getResourceNames(report.Replace)
-	}
+	body += listResourceNames("add", report.Add)
+	body += listResourceNames("change", report.Change)
+	body += listResourceNames("destroy", report.Destroy)
+	body += listResourceNames("replace", report.Replace)
 
-	// 展開して差分を表示
 	if len(diff) != 0 {
 		body += fmt.Sprintf("<details><summary>Change details (Click me)</summary>\n%s\n</details>\n", diff)
 	}
-	
+
 	fmt.Print(body)
 }

@@ -1,13 +1,13 @@
 ### 3 to add, 1 to change, 2 to destroy.
 - add
-	- aws_route_table.public-route
-	- aws_route_table_association.puclic-a
+    - aws_route_table.public-route
+    - aws_route_table_association.puclic-a
 - change
-	- aws_subnet.public-a
+    - aws_subnet.public-a
 - destroy
-	- aws_instance.test
+    - aws_instance.test
 - replace
-	- aws_security_group.admin
+    - aws_security_group.admin
 <details><summary>Change details (Click me)</summary>
 
 ```diff

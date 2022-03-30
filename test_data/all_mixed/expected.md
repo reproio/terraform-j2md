@@ -1,12 +1,12 @@
 ### 2 to add, 1 to change, 2 to destroy.
 - add
-	- env_variable.test5
+    - env_variable.test5
 - change
-	- env_variable.test2
+    - env_variable.test2
 - destroy
-	- env_variable.test3
+    - env_variable.test3
 - replace
-	- random_id.test4
+    - random_id.test4
 <details><summary>Change details (Click me)</summary>
 
 ```diff

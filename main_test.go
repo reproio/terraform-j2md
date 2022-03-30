@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 	"testing"
+
+	"github.com/pmezard/go-difflib/difflib"
 )
 
 func TestMain(t *testing.T) {
@@ -28,20 +30,19 @@ func TestMain(t *testing.T) {
 
 			actual := RunCase(t, casePath+"/show.json")
 			if string(expected) != actual {
-				t.Errorf("\ngot:\n%v\nwant:\n%v", actual, string(expected))
+				diff := difflib.UnifiedDiff{
+					A:       difflib.SplitLines(actual),
+					B:       difflib.SplitLines(string(expected)),
+					Context: 3,
+				}
+				diffText, _ := difflib.GetUnifiedDiffString(diff)
+				t.Errorf("result does not matched:\n %s", diffText)
 			}
 		})
 	}
 }
 
 func RunCase(t *testing.T, inputFile string) string {
-	originStdin := os.Stdin
-	originStdout := os.Stdout
-	defer func() {
-		os.Stdin = originStdin
-		os.Stdout = originStdout
-	}()
-
 	input, err := os.Open(inputFile)
 	if err != nil {
 		t.Errorf("cannot open input file: %s", inputFile)
@@ -57,8 +58,14 @@ func RunCase(t *testing.T, inputFile string) string {
 		r.Close()
 	}()
 
-	os.Stdout = w
+	originStdin := os.Stdin
+	originStdout := os.Stdout
 	os.Stdin = input
+	os.Stdout = w
+	defer func() {
+		os.Stdin = originStdin
+		os.Stdout = originStdout
+	}()
 	main()
 
 	w.Close()
