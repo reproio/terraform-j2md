@@ -9,34 +9,45 @@ import (
 	"github.com/pmezard/go-difflib/difflib"
 )
 
-func TestMain(t *testing.T) {
-	cases := map[string]string{
-		"No Changes":             "test_data/no_changes",
-		"Single Create":          "test_data/single_add",
-		"Single Change":          "test_data/single_change",
-		"Single Destroy":         "test_data/single_destroy",
-		"Single Replace":         "test_data/single_replace",
-		"All Change Types Mixed": "test_data/all_mixed",
-		"AWS Resource Changes":   "test_data/aws_mixed",
+func TestAll(t *testing.T) {
+	type args struct {
+		dataPath string
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{name: "No Changes", args: args{dataPath: "testdata/no_changes"}},
+		{name: "Single Create", args: args{dataPath: "testdata/single_add"}},
+		{name: "Single Change", args: args{dataPath: "testdata/single_change"}},
+		{name: "Single Destroy", args: args{dataPath: "testdata/single_destroy"}},
+		{name: "Single Replace", args: args{dataPath: "testdata/single_replace"}},
+		{name: "All Change Types Mixed", args: args{dataPath: "testdata/all_mixed"}},
+		{name: "AWS Resource Changes", args: args{dataPath: "testdata/aws_mixed"}},
 	}
 
-	for caseName, casePath := range cases {
-		t.Run(caseName, func(t *testing.T) {
-			expectedFilePath := casePath + "/expected.md"
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dataPath := tt.args.dataPath
+			expectedFilePath := dataPath + "/expected.md"
 			expected, err := os.ReadFile(expectedFilePath)
 			if err != nil {
 				t.Errorf("cannot open input file: %s", expectedFilePath)
 			}
 
-			actual := RunCase(t, casePath+"/show.json")
+			actual := RunCase(t, dataPath+"/show.json")
 			if string(expected) != actual {
 				diff := difflib.UnifiedDiff{
 					A:       difflib.SplitLines(actual),
 					B:       difflib.SplitLines(string(expected)),
 					Context: 3,
 				}
-				diffText, _ := difflib.GetUnifiedDiffString(diff)
-				t.Errorf("result does not matched:\n %s", diffText)
+				diffText, err := difflib.GetUnifiedDiffString(diff)
+				if err != nil {
+					t.Error("result does not matched, and could not render diff")
+				} else {
+					t.Errorf("result does not matched:\n %s", diffText)
+				}
 			}
 		})
 	}
