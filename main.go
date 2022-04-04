@@ -4,60 +4,90 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"os"
+	"text/template"
 
 	tfjson "github.com/hashicorp/terraform-json"
 	"github.com/pmezard/go-difflib/difflib"
 )
 
-func listResourceNames(header string, report []*tfjson.ResourceChange) string {
-	if report == nil {
-		return ""
-	}
+const tmplStr = `### {{.CreatedCount}} to add, {{.UpdatedCount}} to change, {{.DeletedCount}} to destroy, {{.ReplacedCount}} to replace.
+{{if .CreatedNames}}- add{{ range .CreatedNames }}
+    - {{.Address -}}
+{{ end }}{{end}}
+{{if .UpdatedNames}}- change{{ range .UpdatedNames }}
+    - {{.Address -}}
+{{ end }}{{end}}
+{{if .DeletedNames}}- delete{{ range .DeletedNames }}
+    - {{.Address -}}
+{{ end }}{{end}}
+{{if .ReplacedNames}}- replace{{ range .ReplacedNames }}
+    - {{.Address -}}
+{{ end }}{{end}}
+{{if .ChangedResult}}<details><summary>Change details</summary>
+{{ range .ChangedResult }}
+{{.Backquote}}diff
+# {{.ReportChanges.Type}}.{{.ReportChanges.Name}} {{.Message}}
+{{.Diff}}
+{{.Backquote}}
+{{end}}{{end}}
+</details>
+`
 
-	body := "- " + header + "\n"
-	for _, c := range report {
-		body += fmt.Sprintf("    - %s\n", c.Address)
-	}
-	return body
+type CommonTemplate struct {
+	CreatedCount  int
+	UpdatedCount  int
+	DeletedCount  int
+	ReplacedCount int
+	CreatedNames  []*tfjson.ResourceChange
+	UpdatedNames  []*tfjson.ResourceChange
+	DeletedNames  []*tfjson.ResourceChange
+	ReplacedNames []*tfjson.ResourceChange
+	ChangedResult []DiffTemplate
 }
-func createResourceDiffString(report *tfjson.ResourceChange) string {
+type DiffTemplate struct {
+	ReportChanges *tfjson.ResourceChange
+	Message       string
+	Diff          string
+	Backquote     string
+}
+
+func createResourceDiffString(resourceChanges *tfjson.ResourceChange) (string, string, error) {
 	var message string
 	switch {
-	case report.Change.Actions.Create():
+	case resourceChanges.Change.Actions.Create():
 		message = "will be created"
-	case report.Change.Actions.Update():
+	case resourceChanges.Change.Actions.Update():
 		message = "will be updated in-place"
-	case report.Change.Actions.Delete():
+	case resourceChanges.Change.Actions.Delete():
 		message = "will be destroyed"
-	case report.Change.Actions.Replace():
+	case resourceChanges.Change.Actions.Replace():
 		message = "will be replaced"
 	}
-	beforeData, err := json.MarshalIndent(report.Change.Before, "", "  ")
+	beforeData, err := json.MarshalIndent(resourceChanges.Change.Before, "", "  ")
 	if err != nil {
-		log.Fatal(err)
+		return "", "", fmt.Errorf("error message : %w", err)
 	}
-	afterData, err := json.MarshalIndent(report.Change.After, "", "  ")
+	afterData, err := json.MarshalIndent(resourceChanges.Change.After, "", "  ")
 	if err != nil {
-		log.Fatal(err)
+		return "", "", fmt.Errorf("error message : %w", err)
 	}
-	a := string(beforeData)
-	b := string(afterData)
 	diff := difflib.UnifiedDiff{
-		A:       difflib.SplitLines(a),
-		B:       difflib.SplitLines(b),
+		A:       difflib.SplitLines(string(beforeData)),
+		B:       difflib.SplitLines(string(afterData)),
 		Context: 3,
 	}
-	diffText, _ := difflib.GetUnifiedDiffString(diff)
-	return fmt.Sprintf("\n```diff\n# %s.%s %s\n%s```\n", report.Type, report.Name, message, diffText)
+	diffText, err := difflib.GetUnifiedDiffString(diff)
+	if err != nil {
+		return "", "", fmt.Errorf("error message : %w", err)
+	}
+	return message, diffText, nil
 }
-
 func render(input string) (string, error) {
 	var plan tfjson.Plan
 	err := json.Unmarshal([]byte(input), &plan)
 	if err != nil {
-		return "", fmt.Errorf("input format is invalid: %w", err)
+		return "", fmt.Errorf("error message : %w", err)
 	}
 
 	var report struct {
@@ -67,7 +97,8 @@ func render(input string) (string, error) {
 		Replace []*tfjson.ResourceChange
 	}
 
-	var diff string
+	diffs := []DiffTemplate{}
+
 	for _, c := range plan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
@@ -83,20 +114,40 @@ func render(input string) (string, error) {
 		case c.Change.Actions.Replace():
 			report.Replace = append(report.Replace, c)
 		}
-		diff += createResourceDiffString(c)
+		message, diff, err := createResourceDiffString(c)
+		if err != nil {
+			return "", fmt.Errorf("error message : %w", err)
+		}
+		diffData := DiffTemplate{
+			ReportChanges: c,
+			Message:       message,
+			Diff:          diff,
+			Backquote:     "```",
+		}
+		diffs = append(diffs, diffData)
 	}
 
-	var body string
-	body += fmt.Sprintf("### %d to add, %d to change, %d to destroy.\n", len(report.Add)+len(report.Replace), len(report.Change), len(report.Destroy)+len(report.Replace))
-	body += listResourceNames("add", report.Add)
-	body += listResourceNames("change", report.Change)
-	body += listResourceNames("destroy", report.Destroy)
-	body += listResourceNames("replace", report.Replace)
-	if len(diff) != 0 {
-		body += fmt.Sprintf("<details><summary>Change details (Click me)</summary>\n%s\n</details>\n", diff)
+	data := CommonTemplate{
+		CreatedCount:  len(report.Add),
+		UpdatedCount:  len(report.Change),
+		DeletedCount:  len(report.Destroy),
+		ReplacedCount: len(report.Replace),
+		CreatedNames:  report.Add,
+		UpdatedNames:  report.Change,
+		DeletedNames:  report.Destroy,
+		ReplacedNames: report.Replace,
+		ChangedResult: diffs,
 	}
 
-	return body, nil
+	tmpl, err := template.New("test_template").Parse(tmplStr)
+	if err != nil {
+		return "", fmt.Errorf("error message : %w", err)
+	}
+
+	if err := tmpl.Execute(os.Stdout, data); err != nil {
+		return "", fmt.Errorf("error message : %w", err)
+	}
+	return "", nil
 }
 
 func run() int {
