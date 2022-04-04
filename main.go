@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"os"
 
@@ -51,14 +52,12 @@ func createResourceDiffString(report *tfjson.ResourceChange) string {
 	diffText, _ := difflib.GetUnifiedDiffString(diff)
 	return fmt.Sprintf("\n```diff\n# %s.%s %s\n%s```\n", report.Type, report.Name, message, diffText)
 }
-func main() {
-	var plan tfjson.Plan
-	var body, diff string
 
-	err := json.NewDecoder(os.Stdin).Decode(&plan)
+func render(input string) (string, error) {
+	var plan tfjson.Plan
+	err := json.Unmarshal([]byte(input), &plan)
 	if err != nil {
-		log.Fatal(err)
-		return
+		return "", fmt.Errorf("input format is invalid: %w", err)
 	}
 
 	var report struct {
@@ -68,6 +67,7 @@ func main() {
 		Replace []*tfjson.ResourceChange
 	}
 
+	var diff string
 	for _, c := range plan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
@@ -86,16 +86,36 @@ func main() {
 		diff += createResourceDiffString(c)
 	}
 
+	var body string
 	body += fmt.Sprintf("### %d to add, %d to change, %d to destroy.\n", len(report.Add)+len(report.Replace), len(report.Change), len(report.Destroy)+len(report.Replace))
-
 	body += listResourceNames("add", report.Add)
 	body += listResourceNames("change", report.Change)
 	body += listResourceNames("destroy", report.Destroy)
 	body += listResourceNames("replace", report.Replace)
-
 	if len(diff) != 0 {
 		body += fmt.Sprintf("<details><summary>Change details (Click me)</summary>\n%s\n</details>\n", diff)
 	}
 
-	fmt.Print(body)
+	return body, nil
+}
+
+func run() int {
+	input, err := io.ReadAll(os.Stdin)
+	if err != nil {
+		fmt.Printf("cannot read stdin: %v", err)
+		return 1
+	}
+
+	output, err := render(string(input))
+	if err != nil {
+		fmt.Printf("cannot convert: %v", err)
+		return 1
+	}
+
+	fmt.Print(output)
+	return 0
+}
+
+func main() {
+	os.Exit(run())
 }
