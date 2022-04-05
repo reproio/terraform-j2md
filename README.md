@@ -43,8 +43,7 @@ Saved the plan to: plan.tfplan
 To perform exactly these actions, run the following command to apply:
     terraform apply "plan.tfplan"
 
-$ terraform show -json plan.tfplan > show.json
-$ ./terraform-j2md < show.json
+$ terraform show -json plan.tfplan | terraform-j2md
 ### 1 to add, 0 to change, 0 to destroy, 0 to replace.
 - add
     - null_resource.foo
