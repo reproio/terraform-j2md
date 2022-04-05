@@ -1,4 +1,4 @@
-### 2 to add, 1 to change, 2 to destroy.
+### 1 to add, 1 to change, 1 to destroy, 1 to replace.
 - add
     - env_variable.test5
 - change
@@ -7,7 +7,7 @@
     - env_variable.test3
 - replace
     - random_id.test4
-<details><summary>Change details (Click me)</summary>
+<details><summary>Change details</summary>
 
 ```diff
 # env_variable.test2 will be updated in-place

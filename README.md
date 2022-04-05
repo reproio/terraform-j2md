@@ -45,10 +45,10 @@ To perform exactly these actions, run the following command to apply:
 
 $ terraform show -json plan.tfplan > show.json
 $ ./terraform-j2md < show.json
-### 1 to add, 0 to change, 0 to destroy.
+### 1 to add, 0 to change, 0 to destroy, 0 to replace.
 - add
     - null_resource.foo
-<details><summary>Change details (Click me)</summary>
+<details><summary>Change details</summary>
 
 ```diff
 # null_resource.foo will be created

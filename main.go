@@ -13,26 +13,31 @@ import (
 )
 
 const planTemplateBody = `### {{.CreatedCount}} to add, {{.UpdatedCount}} to change, {{.DeletedCount}} to destroy, {{.ReplacedCount}} to replace.
-{{if .CreatedNames}}- add{{ range .CreatedNames }}
-    - {{.Address -}}
-{{end}}{{end -}}
-{{if .UpdatedNames}}- change{{ range .UpdatedNames }}
-    - {{.Address -}}
-{{end}}{{end -}}
-{{if .DeletedNames}}- delete{{ range .DeletedNames }}
-    - {{.Address -}}
-{{end}}{{end -}}
-{{if .ReplacedNames}}- replace{{ range .ReplacedNames }}
+{{- if .CreatedNames}}
+- add{{ range .CreatedNames }}
     - {{.Address -}}
 {{end}}{{end}}
-{{if .ChangedResult}}<details><summary>Change details</summary>
+{{- if .UpdatedNames}}
+- change{{ range .UpdatedNames }}
+    - {{.Address -}}
+{{end}}{{end}}
+{{- if .DeletedNames}}
+- destroy{{ range .DeletedNames }}
+    - {{.Address -}}
+{{end}}{{end}}
+{{- if .ReplacedNames}}
+- replace{{ range .ReplacedNames }}
+    - {{.Address -}}
+{{end}}{{end}}
+{{if .ChangedResult -}}
+<details><summary>Change details</summary>
 {{ range .ChangedResult }}
 {{.Backquote}}diff
 # {{.ReportChanges.Type}}.{{.ReportChanges.Name}} {{.Message}}
 {{.Diff}}{{.Backquote}}
-{{end}}{{end}}
+{{end}}
 </details>
-`
+{{end}}`
 
 type PlanTemplate struct {
 	CreatedCount  int
@@ -48,16 +53,18 @@ type PlanTemplate struct {
 type DiffTemplate struct {
 	ReportChanges *tfjson.ResourceChange
 	Message       string
-	Diff          string
-	Backquote     string
 }
 
-func createResourceDiffString(resourceChanges *tfjson.ResourceChange) (string, error) {
-	beforeData, err := json.MarshalIndent(resourceChanges.Change.Before, "", "  ")
+func (DiffTemplate) Backquote() string {
+	return "```"
+}
+
+func (d DiffTemplate) Diff() (string, error) {
+	beforeData, err := json.MarshalIndent(d.ReportChanges.Change.Before, "", "  ")
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (before): %w", err)
 	}
-	afterData, err := json.MarshalIndent(resourceChanges.Change.After, "", "  ")
+	afterData, err := json.MarshalIndent(d.ReportChanges.Change.After, "", "  ")
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
 	}
@@ -102,15 +109,9 @@ func NewTemplateData(plan tfjson.Plan) (*PlanTemplate, error) {
 			report.Replace = append(report.Replace, c)
 			message = "will be replaced"
 		}
-		diff, err := createResourceDiffString(c)
-		if err != nil {
-			return nil, fmt.Errorf("invalid resource changes: %w", err)
-		}
 		diffs = append(diffs, DiffTemplate{
 			ReportChanges: c,
 			Message:       message,
-			Diff:          diff,
-			Backquote:     "```",
 		})
 	}
 

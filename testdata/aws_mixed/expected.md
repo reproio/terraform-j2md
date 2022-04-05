@@ -1,4 +1,4 @@
-### 3 to add, 1 to change, 2 to destroy.
+### 2 to add, 1 to change, 1 to destroy, 1 to replace.
 - add
     - aws_route_table.public-route
     - aws_route_table_association.puclic-a
@@ -8,7 +8,7 @@
     - aws_instance.test
 - replace
     - aws_security_group.admin
-<details><summary>Change details (Click me)</summary>
+<details><summary>Change details</summary>
 
 ```diff
 # aws_instance.test will be destroyed

@@ -1,7 +1,7 @@
-### 0 to add, 1 to change, 0 to destroy.
+### 0 to add, 1 to change, 0 to destroy, 0 to replace.
 - change
     - env_variable.test1
-<details><summary>Change details (Click me)</summary>
+<details><summary>Change details</summary>
 
 ```diff
 # env_variable.test1 will be updated in-place

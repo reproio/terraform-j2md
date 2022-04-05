@@ -1,7 +1,7 @@
-### 1 to add, 0 to change, 1 to destroy.
+### 0 to add, 0 to change, 0 to destroy, 1 to replace.
 - replace
     - random_id.test
-<details><summary>Change details (Click me)</summary>
+<details><summary>Change details</summary>
 
 ```diff
 # random_id.test will be replaced
