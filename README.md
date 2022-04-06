@@ -70,5 +70,5 @@ go test ./...
 
 ### Build
 ```
-go build -o terraform-j2md main.go
+go build -o terraform-j2md cmd/terraform-j2md/main.go
 ```

@@ -32,7 +32,7 @@ func Test_render(t *testing.T) {
 				t.Errorf("cannot open input file: %s", inputFilePath)
 			}
 
-			got, err := render(string(input))
+			got, err := Render(string(input))
 			if (err != nil) != tt.wantErr {
 				t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
 				return
