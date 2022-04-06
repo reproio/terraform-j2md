@@ -7,6 +7,10 @@ import (
 	"terraform-j2md/internal/template"
 )
 
+func main() {
+	os.Exit(run())
+}
+
 func run() int {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil {
@@ -22,8 +26,4 @@ func run() int {
 
 	fmt.Print(output)
 	return 0
-}
-
-func main() {
-	os.Exit(run())
 }
