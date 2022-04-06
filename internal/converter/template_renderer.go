@@ -1,4 +1,4 @@
-package template
+package converter
 
 import (
 	"bytes"
@@ -10,28 +10,28 @@ import (
 )
 
 const planTemplateBody = `### {{.CreatedCount}} to add, {{.UpdatedCount}} to change, {{.DeletedCount}} to destroy, {{.ReplacedCount}} to replace.
-{{- if .CreatedNames}}
-- add{{ range .CreatedNames }}
-    - {{.Address -}}
+{{- if .CreatedAddresses}}
+- add{{ range .CreatedAddresses }}
+    - {{. -}}
 {{end}}{{end}}
-{{- if .UpdatedNames}}
-- change{{ range .UpdatedNames }}
-    - {{.Address -}}
+{{- if .UpdatedAddresses}}
+- change{{ range .UpdatedAddresses }}
+    - {{. -}}
 {{end}}{{end}}
-{{- if .DeletedNames}}
-- destroy{{ range .DeletedNames }}
-    - {{.Address -}}
+{{- if .DeletedAddresses}}
+- destroy{{ range .DeletedAddresses }}
+    - {{. -}}
 {{end}}{{end}}
-{{- if .ReplacedNames}}
-- replace{{ range .ReplacedNames }}
-    - {{.Address -}}
+{{- if .ReplacedAddresses}}
+- replace{{ range .ReplacedAddresses }}
+    - {{. -}}
 {{end}}{{end}}
-{{if .ChangedResult -}}
+{{if .ResourceChanges -}}
 <details><summary>Change details</summary>
-{{ range .ChangedResult }}
+{{ range .ResourceChanges }}
 {{.Backquote}}diff
-# {{.ReportChanges.Type}}.{{.ReportChanges.Name}} {{.Message}}
-{{.Diff}}{{.Backquote}}
+# {{.ResourceChange.Type}}.{{.ResourceChange.Name}} {{.HeaderSuffix}}
+{{.GetUnifiedDiffString}}{{.Backquote}}
 {{end}}
 </details>
 {{end}}`
@@ -43,7 +43,7 @@ func Render(input string) (string, error) {
 		return "", fmt.Errorf("invalid input: %w", err)
 	}
 
-	data, err := NewTemplateData(plan)
+	planData, err := NewPlanData(plan)
 	if err != nil {
 		return "", fmt.Errorf("invalid plan data: %w", err)
 	}
@@ -53,9 +53,9 @@ func Render(input string) (string, error) {
 		return "", fmt.Errorf("invalid template text: %w", err)
 	}
 
-	var body bytes.Buffer
-	if err := planTemplate.Execute(&body, data); err != nil {
+	var output bytes.Buffer
+	if err := planTemplate.Execute(&output, planData); err != nil {
 		return "", fmt.Errorf("failed to render template: %w", err)
 	}
-	return body.String(), nil
+	return output.String(), nil
 }

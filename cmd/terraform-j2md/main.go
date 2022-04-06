@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"terraform-j2md/internal/template"
+	"terraform-j2md/internal/converter"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func run() int {
 		return 1
 	}
 
-	output, err := template.Render(string(input))
+	output, err := converter.Render(string(input))
 	if err != nil {
 		fmt.Printf("cannot convert: %v", err)
 		return 1
