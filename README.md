@@ -1,5 +1,8 @@
 terraform-j2md
 ===
+![Go](https://github.com/reproio/terraform-j2md/workflows/Go/badge.svg)
+![goreleaser](https://github.com/reproio/terraform-j2md/workflows/goreleaser/badge.svg)
+
 Output human-readable markdown texts from Terraform plan JSON output.
 
 ## Synopsis
