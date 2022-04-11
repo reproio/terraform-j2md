@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"terraform-j2md/internal/converter"
+	"terraform-j2md/internal/terraform"
 )
 
 func main() {
@@ -14,16 +14,17 @@ func main() {
 func run() int {
 	input, err := io.ReadAll(os.Stdin)
 	if err != nil {
-		fmt.Printf("cannot read stdin: %v", err)
+		fmt.Fprintf(os.Stderr, "cannot read stdin: %v", err)
 		return 1
 	}
-
-	output, err := converter.Render(string(input))
+	planData, err := terraform.NewPlanData(input)
 	if err != nil {
-		fmt.Printf("cannot convert: %v", err)
+		fmt.Fprintf(os.Stderr, "cannot parse input as Terraform plan JSON: %v", err)
 		return 1
 	}
-
-	fmt.Print(output)
+	if err = planData.Render(os.Stdout); err != nil {
+		fmt.Fprintf(os.Stderr, "cannot render: %v", err)
+		return 1
+	}
 	return 0
 }
