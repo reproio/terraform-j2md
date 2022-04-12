@@ -10,7 +10,7 @@ import (
 	"github.com/pmezard/go-difflib/difflib"
 )
 
-const planTemplateBody = `### {{.CreatedCount}} to add, {{.UpdatedCount}} to change, {{.DeletedCount}} to destroy, {{.ReplacedCount}} to replace.
+const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAddresses}} to change, {{len .DeletedAddresses}} to destroy, {{len .ReplacedAddresses}} to replace.
 {{- if .CreatedAddresses}}
 - add{{ range .CreatedAddresses }}
     - {{. -}}
@@ -38,10 +38,6 @@ const planTemplateBody = `### {{.CreatedCount}} to add, {{.UpdatedCount}} to cha
 {{end}}`
 
 type PlanData struct {
-	CreatedCount      int
-	UpdatedCount      int
-	DeletedCount      int
-	ReplacedCount     int
 	CreatedAddresses  []string
 	UpdatedAddresses  []string
 	DeletedAddresses  []string
@@ -119,16 +115,12 @@ func NewPlanData(input []byte) (*PlanData, error) {
 		switch {
 		case c.Change.Actions.Create():
 			planData.CreatedAddresses = append(planData.CreatedAddresses, c.Address)
-			planData.CreatedCount++
 		case c.Change.Actions.Update():
 			planData.UpdatedAddresses = append(planData.UpdatedAddresses, c.Address)
-			planData.UpdatedCount++
 		case c.Change.Actions.Delete():
 			planData.DeletedAddresses = append(planData.DeletedAddresses, c.Address)
-			planData.DeletedCount++
 		case c.Change.Actions.Replace():
 			planData.ReplacedAddresses = append(planData.ReplacedAddresses, c.Address)
-			planData.ReplacedCount++
 		}
 		planData.ResourceChanges = append(planData.ResourceChanges, ResourceChangeData{
 			ResourceChange: c,
