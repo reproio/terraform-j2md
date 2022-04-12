@@ -30,9 +30,9 @@ const planTemplateBody = `### {{.CreatedCount}} to add, {{.UpdatedCount}} to cha
 {{if .ResourceChanges -}}
 <details><summary>Change details</summary>
 {{ range .ResourceChanges }}
-{{backquote}}diff
+{{codeFence}}diff
 # {{.ResourceChange.Type}}.{{.ResourceChange.Name}} {{.HeaderSuffix}}
-{{.GetUnifiedDiffString}}{{backquote}}
+{{.GetUnifiedDiffString}}{{codeFence}}
 {{end}}
 </details>
 {{end}}`
@@ -89,7 +89,7 @@ func (r ResourceChangeData) HeaderSuffix() string {
 
 func (plan *PlanData) Render(w io.Writer) error {
 	funcMap := template.FuncMap{
-		"backquote": func() string {
+		"codeFence": func() string {
 			return "```"
 		},
 	}
