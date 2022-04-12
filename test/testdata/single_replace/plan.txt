@@ -1,0 +1,26 @@
+random_id.test: Refreshing state... [id=qddo6VPNl1g]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # random_id.test must be replaced
+-/+ resource "random_id" "test" {
+      ~ b64_std     = "qddo6VPNl1g=" -> (known after apply)
+      ~ b64_url     = "qddo6VPNl1g" -> (known after apply)
+      ~ byte_length = 8 -> 10 # forces replacement
+      ~ dec         = "12238365863745263448" -> (known after apply)
+      ~ hex         = "a9d768e953cd9758" -> (known after apply)
+      ~ id          = "qddo6VPNl1g" -> (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 1 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: /tmp/tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "/tmp/tfplan"

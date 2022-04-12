@@ -1,0 +1,52 @@
+env_variable.test3: Refreshing state... [id=test3]
+env_variable.test2: Refreshing state... [id=test2]
+env_variable.test1: Refreshing state... [id=test1]
+random_id.test4: Refreshing state... [id=m6S5W82_OFA]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+  - destroy
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # env_variable.test2 will be updated in-place
+  ~ resource "env_variable" "test2" {
+        id   = "test2"
+      ~ name = "test2" -> "test2_changed"
+    }
+
+  # env_variable.test3 will be destroyed
+  # (because env_variable.test3 is not in configuration)
+  - resource "env_variable" "test3" {
+      - id   = "test3" -> null
+      - name = "test3" -> null
+    }
+
+  # env_variable.test5 will be created
+  + resource "env_variable" "test5" {
+      + id    = (known after apply)
+      + name  = "test5"
+      + value = (sensitive value)
+    }
+
+  # random_id.test4 must be replaced
+-/+ resource "random_id" "test4" {
+      ~ b64_std     = "m6S5W82/OFA=" -> (known after apply)
+      ~ b64_url     = "m6S5W82_OFA" -> (known after apply)
+      ~ byte_length = 8 -> 10 # forces replacement
+      ~ dec         = "11215292776004401232" -> (known after apply)
+      ~ hex         = "9ba4b95bcdbf3850" -> (known after apply)
+      ~ id          = "m6S5W82_OFA" -> (known after apply)
+    }
+
+Plan: 2 to add, 1 to change, 2 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: /tmp/tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "/tmp/tfplan"
