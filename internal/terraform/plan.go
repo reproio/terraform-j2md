@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 	"text/template"
 
 	tfjson "github.com/hashicorp/terraform-json"
@@ -57,15 +58,18 @@ func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
 	}
+	// Try to parse JSON string in values
+	replacer := strings.NewReplacer(`\n`, "\n  ", `\"`, "\"")
 	diff := difflib.UnifiedDiff{
-		A:       difflib.SplitLines(string(before)),
-		B:       difflib.SplitLines(string(after)),
+		A:       difflib.SplitLines(replacer.Replace(string(before))),
+		B:       difflib.SplitLines(replacer.Replace(string(after))),
 		Context: 3,
 	}
 	diffText, err := difflib.GetUnifiedDiffString(diff)
 	if err != nil {
 		return "", fmt.Errorf("failed to create diff: %w", err)
 	}
+
 	return diffText, nil
 }
 
