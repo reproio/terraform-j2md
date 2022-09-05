@@ -3,7 +3,7 @@
     - random_id.test
 <details><summary>Change details</summary>
 
-```diff
+````````diff
 # random_id.test will be replaced
 @@ -1,10 +1,5 @@
  {
@@ -17,6 +17,6 @@
    "keepers": null,
    "prefix": null
  }
-```
+````````
 
 </details>

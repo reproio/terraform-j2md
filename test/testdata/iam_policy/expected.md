@@ -3,7 +3,7 @@
     - aws_iam_policy.test_policy
 <details><summary>Change details</summary>
 
-```diff
+````````diff
 # aws_iam_policy.test_policy will be updated in-place
 @@ -12,7 +12,8 @@
        "Action": [
@@ -15,6 +15,6 @@
        ],
        "Resource": "*"
      }
-```
+````````
 
 </details>

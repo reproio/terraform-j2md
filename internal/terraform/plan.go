@@ -90,10 +90,9 @@ func (r ResourceChangeData) HeaderSuffix() string {
 func (plan *PlanData) Render(w io.Writer) error {
 	funcMap := template.FuncMap{
 		"codeFence": func() string {
-			return "```"
+			return "````````"
 		},
 	}
-
 	planTemplate, err := template.New("plan").Funcs(funcMap).Parse(planTemplateBody)
 	if err != nil {
 		return fmt.Errorf("invalid template text: %w", err)
