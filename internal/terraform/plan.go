@@ -1,11 +1,9 @@
 package terraform
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
-	"regexp"
 	"strings"
 	"text/template"
 
@@ -33,7 +31,9 @@ const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAd
 {{if .ResourceChanges -}}
 <details><summary>Change details</summary>
 {{ range .ResourceChanges }}
-{{.GetUnifiedDiffString}}
+{{codeFence}}diff
+# {{.ResourceChange.Type}}.{{.ResourceChange.Name}} {{.HeaderSuffix}}
+{{.GetUnifiedDiffString}}{{codeFence}}
 {{end}}
 </details>
 {{end}}`
@@ -69,10 +69,8 @@ func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to create diff: %w", err)
 	}
-	comment := fmt.Sprintf("# %s.%s %s", r.ResourceChange.Type, r.ResourceChange.Name, r.HeaderSuffix())
-	fence := r.codeFence(diffText)
 
-	return fence + "diff\n" + comment + "\n" + diffText + fence, nil
+	return diffText, nil
 }
 
 func (r ResourceChangeData) HeaderSuffix() string {
@@ -89,23 +87,13 @@ func (r ResourceChangeData) HeaderSuffix() string {
 	return ""
 }
 
-var codeFenceRegexp = regexp.MustCompile(`\s*(` + "`" + `{3,})`)
-
-func (r ResourceChangeData) codeFence(diffText string) string {
-	count := 3
-
-	scanner := bufio.NewScanner(strings.NewReader(diffText))
-	for scanner.Scan() {
-		values := codeFenceRegexp.FindStringSubmatch(scanner.Text())
-		if values != nil && len(values[1]) >= 3 {
-			count = len(values[1]) + 1
-		}
-	}
-	return strings.Repeat("`", count)
-}
-
 func (plan *PlanData) Render(w io.Writer) error {
-	planTemplate, err := template.New("plan").Parse(planTemplateBody)
+	funcMap := template.FuncMap{
+		"codeFence": func() string {
+			return "````````"
+		},
+	}
+	planTemplate, err := template.New("plan").Funcs(funcMap).Parse(planTemplateBody)
 	if err != nil {
 		return fmt.Errorf("invalid template text: %w", err)
 	}

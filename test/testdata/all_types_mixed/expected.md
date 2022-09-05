@@ -9,7 +9,7 @@
     - random_id.test4
 <details><summary>Change details</summary>
 
-```diff
+````````diff
 # env_variable.test2 will be updated in-place
 @@ -1,5 +1,5 @@
  {
@@ -18,9 +18,9 @@
 +  "name": "test2_changed",
    "value": ""
  }
-```
+````````
 
-```diff
+````````diff
 # env_variable.test3 will be destroyed
 @@ -1,5 +1 @@
 -{
@@ -29,18 +29,18 @@
 -  "value": ""
 -}
 +null
-```
+````````
 
-```diff
+````````diff
 # env_variable.test5 will be created
 @@ -1 +1,3 @@
 -null
 +{
 +  "name": "test5"
 +}
-```
+````````
 
-```diff
+````````diff
 # random_id.test4 will be replaced
 @@ -1,10 +1,5 @@
  {
@@ -54,6 +54,6 @@
    "keepers": null,
    "prefix": null
  }
-```
+````````
 
 </details>

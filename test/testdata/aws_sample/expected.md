@@ -10,7 +10,7 @@
     - aws_security_group.admin
 <details><summary>Change details</summary>
 
-```diff
+````````diff
 # aws_instance.test will be destroyed
 @@ -1,92 +1 @@
 -{
@@ -106,9 +106,9 @@
 -  ]
 -}
 +null
-```
+````````
 
-```diff
+````````diff
 # aws_route_table.public-route will be created
 @@ -1 +1,22 @@
 -null
@@ -134,9 +134,9 @@
 +  "timeouts": null,
 +  "vpc_id": "vpc-0c08ee65bf93a360f"
 +}
-```
+````````
 
-```diff
+````````diff
 # aws_route_table_association.puclic-a will be created
 @@ -1 +1,4 @@
 -null
@@ -144,9 +144,9 @@
 +  "gateway_id": null,
 +  "subnet_id": "subnet-0342dca4d2a611266"
 +}
-```
+````````
 
-```diff
+````````diff
 # aws_security_group.admin will be replaced
 @@ -1,6 +1,5 @@
  {
@@ -177,9 +177,9 @@
    "timeouts": null,
    "vpc_id": "vpc-0c08ee65bf93a360f"
  }
-```
+````````
 
-```diff
+````````diff
 # aws_subnet.public-a will be updated in-place
 @@ -18,10 +18,10 @@
    "owner_id": "999999999999",
@@ -194,6 +194,6 @@
    },
    "timeouts": null,
    "vpc_id": "vpc-0c08ee65bf93a360f"
-```
+````````
 
 </details>

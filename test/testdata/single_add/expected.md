@@ -3,13 +3,13 @@
     - null_resource.foo
 <details><summary>Change details</summary>
 
-```diff
+````````diff
 # null_resource.foo will be created
 @@ -1 +1,3 @@
 -null
 +{
 +  "triggers": null
 +}
-```
+````````
 
 </details>

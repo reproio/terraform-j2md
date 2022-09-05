@@ -3,7 +3,7 @@
     - env_variable.test1
 <details><summary>Change details</summary>
 
-```diff
+````````diff
 # env_variable.test1 will be updated in-place
 @@ -1,5 +1,5 @@
  {
@@ -12,6 +12,6 @@
 +  "name": "test1_changed",
    "value": ""
  }
-```
+````````
 
 </details>
