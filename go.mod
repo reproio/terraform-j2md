@@ -1,4 +1,4 @@
-module github.com/abij/terraform-j2md
+module github.com/reproio/terraform-j2md
 
 go 1.18
 
