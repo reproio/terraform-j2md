@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"terraform-j2md/internal/terraform"
+
+	"github.com/reproio/terraform-j2md/internal/terraform"
 )
 
 func main() {
