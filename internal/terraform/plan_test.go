@@ -3,7 +3,9 @@ package terraform
 import (
 	"bytes"
 	"fmt"
+	tfjson "github.com/hashicorp/terraform-json"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -91,6 +93,73 @@ func Test_render(t *testing.T) {
 			if got.String() != string(expected) {
 				t.Errorf("render() = %v, want %v", got.String(), string(expected))
 				return
+			}
+		})
+	}
+}
+
+func TestResourceChangeData_hideSensitiveValue(t *testing.T) {
+	type fields struct {
+		ResourceChange *tfjson.ResourceChange
+	}
+	type args struct {
+		change    interface{}
+		sensitive interface{}
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    interface{}
+		wantErr bool
+	}{
+		{
+			name: "non-sensitive value",
+			fields: fields{
+				ResourceChange: &tfjson.ResourceChange{},
+			},
+			args: args{
+				change: map[string]interface{}{
+					"text": "dummy",
+				},
+				sensitive: false,
+			},
+			want: map[string]interface{}{
+				"text": "dummy",
+			},
+			wantErr: false,
+		},
+		{
+			name: "sensitive value",
+			fields: fields{
+				ResourceChange: &tfjson.ResourceChange{},
+			},
+			args: args{
+				change: map[string]interface{}{
+					"password": "dummy",
+				},
+				sensitive: map[string]interface{}{
+					"password": true,
+				},
+			},
+			want: map[string]interface{}{
+				"password": "(sensitive value)",
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := ResourceChangeData{
+				ResourceChange: tt.fields.ResourceChange,
+			}
+			got, err := r.maskSensitiveValue(tt.args.change, tt.args.sensitive)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("maskSensitiveValue() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("maskSensitiveValue() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

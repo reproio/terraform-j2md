@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 	"text/template"
 
@@ -49,12 +50,52 @@ type ResourceChangeData struct {
 	ResourceChange *tfjson.ResourceChange
 }
 
+func (r ResourceChangeData) renderChange(change interface{}, sensitive interface{}) ([]byte, error) {
+	re, err := r.maskSensitiveValue(change, sensitive)
+	if err != nil {
+		return nil, fmt.Errorf("maskSensitiveValue fails: %w", err)
+	}
+	return json.MarshalIndent(re, "", "  ")
+}
+
+func hasKey(m map[string]interface{}, key string) bool {
+	_, ok := m[key]
+	return ok
+}
+
+func (r ResourceChangeData) maskSensitiveValue(change interface{}, sensitive interface{}) (interface{}, error) {
+	switch sensitive.(type) {
+	case bool:
+		if !sensitive.(bool) {
+			return change, nil
+		}
+	case map[string]interface{}:
+		mappedSensitive := sensitive.(map[string]interface{})
+		if len(mappedSensitive) == 0 {
+			return change, nil
+		}
+
+		var re = map[string]interface{}{}
+		for k, v := range change.(map[string]interface{}) {
+			if hasKey(mappedSensitive, k) && reflect.ValueOf(mappedSensitive[k]).Type().String() == "bool" && mappedSensitive[k].(bool) && v != "" {
+				re[k] = "(sensitive value)"
+			} else {
+				re[k] = v
+			}
+		}
+		return re, nil
+	default:
+		return nil, fmt.Errorf("renderChange can't handling type of sensitive: %T", sensitive)
+	}
+	return nil, nil
+}
+
 func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
-	before, err := json.MarshalIndent(r.ResourceChange.Change.Before, "", "  ")
+	before, err := r.renderChange(r.ResourceChange.Change.Before, r.ResourceChange.Change.BeforeSensitive)
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (before): %w", err)
 	}
-	after, err := json.MarshalIndent(r.ResourceChange.Change.After, "", "  ")
+	after, err := r.renderChange(r.ResourceChange.Change.After, r.ResourceChange.Change.AfterSensitive)
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
 	}
