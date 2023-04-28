@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform-json/sanitize"
+	"github.com/reproio/terraform-j2md/internal/pretty_print"
 	"io"
 	"strings"
 	"text/template"
@@ -114,8 +115,12 @@ func NewPlanData(input []byte) (*PlanData, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to sanitize plan: %w", err)
 	}
+	prettyPrintedPlan, err := pretty_print.PrettyPrintPlan(sanitizedPlan)
+	if err != nil {
+		return nil, fmt.Errorf("failed to prettify plan: %w", err)
+	}
 	planData := PlanData{}
-	for _, c := range sanitizedPlan.ResourceChanges {
+	for _, c := range prettyPrintedPlan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}
