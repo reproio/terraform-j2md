@@ -3,8 +3,8 @@ package terraform
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/terraform-json/sanitize"
 	"io"
-	"reflect"
 	"strings"
 	"text/template"
 
@@ -50,52 +50,12 @@ type ResourceChangeData struct {
 	ResourceChange *tfjson.ResourceChange
 }
 
-func (r ResourceChangeData) renderChange(change interface{}, sensitive interface{}) ([]byte, error) {
-	re, err := r.maskSensitiveValue(change, sensitive)
-	if err != nil {
-		return nil, fmt.Errorf("maskSensitiveValue fails: %w", err)
-	}
-	return json.MarshalIndent(re, "", "  ")
-}
-
-func hasKey(m map[string]interface{}, key string) bool {
-	_, ok := m[key]
-	return ok
-}
-
-func (r ResourceChangeData) maskSensitiveValue(change interface{}, sensitive interface{}) (interface{}, error) {
-	switch sensitive.(type) {
-	case bool:
-		if !sensitive.(bool) {
-			return change, nil
-		}
-	case map[string]interface{}:
-		mappedSensitive := sensitive.(map[string]interface{})
-		if len(mappedSensitive) == 0 {
-			return change, nil
-		}
-
-		var re = map[string]interface{}{}
-		for k, v := range change.(map[string]interface{}) {
-			if hasKey(mappedSensitive, k) && reflect.ValueOf(mappedSensitive[k]).Type().String() == "bool" && mappedSensitive[k].(bool) && v != "" {
-				re[k] = "(sensitive value)"
-			} else {
-				re[k] = v
-			}
-		}
-		return re, nil
-	default:
-		return nil, fmt.Errorf("renderChange can't handling type of sensitive: %T", sensitive)
-	}
-	return nil, nil
-}
-
 func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
-	before, err := r.renderChange(r.ResourceChange.Change.Before, r.ResourceChange.Change.BeforeSensitive)
+	before, err := json.MarshalIndent(r.ResourceChange.Change.Before, "", "  ")
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (before): %w", err)
 	}
-	after, err := r.renderChange(r.ResourceChange.Change.After, r.ResourceChange.Change.AfterSensitive)
+	after, err := json.MarshalIndent(r.ResourceChange.Change.After, "", "  ")
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
 	}
@@ -150,8 +110,12 @@ func NewPlanData(input []byte) (*PlanData, error) {
 	if err := json.Unmarshal(input, &plan); err != nil {
 		return nil, fmt.Errorf("cannot parse input: %w", err)
 	}
+	sanitizedPlan, err := sanitize.SanitizePlan(&plan)
+	if err != nil {
+		return nil, fmt.Errorf("failed to sanitize plan: %w", err)
+	}
 	planData := PlanData{}
-	for _, c := range plan.ResourceChanges {
+	for _, c := range sanitizedPlan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}
