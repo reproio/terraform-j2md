@@ -68,10 +68,10 @@ $ terraform show -json plan.tfplan | terraform-j2md
 ## How to test/build
 ### Test
 ```
-go test ./...
+make test
 ```
 
 ### Build
 ```
-go build -o terraform-j2md cmd/terraform-j2md/main.go
+make build
 ```

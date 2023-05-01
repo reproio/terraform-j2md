@@ -3,6 +3,7 @@ package terraform
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hashicorp/terraform-json/sanitize"
 	"io"
 	"strings"
 	"text/template"
@@ -109,8 +110,12 @@ func NewPlanData(input []byte) (*PlanData, error) {
 	if err := json.Unmarshal(input, &plan); err != nil {
 		return nil, fmt.Errorf("cannot parse input: %w", err)
 	}
+	sanitizedPlan, err := sanitize.SanitizePlan(&plan)
+	if err != nil {
+		return nil, fmt.Errorf("failed to sanitize plan: %w", err)
+	}
 	planData := PlanData{}
-	for _, c := range plan.ResourceChanges {
+	for _, c := range sanitizedPlan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}

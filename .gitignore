@@ -24,3 +24,4 @@ go.work
 .terraform
 *.tfstate.backup
 .terraform.lock.hcl
+dist

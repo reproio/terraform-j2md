@@ -16,7 +16,7 @@
    "id": "test2",
 -  "name": "test2",
 +  "name": "test2_changed",
-   "value": ""
+   "value": "REDACTED_SENSITIVE"
  }
 ````````
 
@@ -26,7 +26,7 @@
 -{
 -  "id": "test3",
 -  "name": "test3",
--  "value": ""
+-  "value": "REDACTED_SENSITIVE"
 -}
 +null
 ````````

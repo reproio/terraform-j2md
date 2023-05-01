@@ -10,7 +10,7 @@
    "id": "test1",
 -  "name": "test1",
 +  "name": "test1_changed",
-   "value": ""
+   "value": "REDACTED_SENSITIVE"
  }
 ````````
 
