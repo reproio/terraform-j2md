@@ -30,13 +30,13 @@ func Test_newPlanData(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			inputFilePath := testDataPath(tt.name, "show.json")
-			input, err := os.ReadFile(inputFilePath)
+			file, err := os.Open(inputFilePath)
 			if err != nil {
 				t.Errorf("cannot open input file: %s", inputFilePath)
 				return
 			}
 
-			_, err = NewPlanData(input)
+			_, err = NewPlanData(file)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewPlanData() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -63,13 +63,13 @@ func Test_render(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			inputFilePath := testDataPath(tt.name, "show.json")
-			input, err := os.ReadFile(inputFilePath)
+			file, err := os.Open(inputFilePath)
 			if err != nil {
 				t.Errorf("cannot open input file: %s", inputFilePath)
 				return
 			}
 
-			plan, err := NewPlanData(input)
+			plan, err := NewPlanData(file)
 			if err != nil {
 				t.Errorf("cannot parse JSON as plan: %v", err)
 				return

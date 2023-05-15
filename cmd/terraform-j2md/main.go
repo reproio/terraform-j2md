@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"os"
 
 	"github.com/reproio/terraform-j2md/internal/terraform"
@@ -13,12 +12,7 @@ func main() {
 }
 
 func run() int {
-	input, err := io.ReadAll(os.Stdin)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "cannot read stdin: %v", err)
-		return 1
-	}
-	planData, err := terraform.NewPlanData(input)
+	planData, err := terraform.NewPlanData(os.Stdin)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "cannot parse input as Terraform plan JSON: %v", err)
 		return 1
