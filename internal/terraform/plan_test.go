@@ -35,6 +35,7 @@ func Test_newPlanData(t *testing.T) {
 				t.Errorf("cannot open input file: %s", inputFilePath)
 				return
 			}
+			defer file.Close()
 
 			_, err = NewPlanData(file)
 			if (err != nil) != tt.wantErr {
@@ -68,6 +69,7 @@ func Test_render(t *testing.T) {
 				t.Errorf("cannot open input file: %s", inputFilePath)
 				return
 			}
+			defer file.Close()
 
 			plan, err := NewPlanData(file)
 			if err != nil {
