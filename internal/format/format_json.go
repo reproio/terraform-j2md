@@ -1,4 +1,4 @@
-package pretty_print
+package format
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-func PrettyPrintPlan(old *tfjson.Plan) (*tfjson.Plan, error) {
+func FormatJsonPlan(old *tfjson.Plan) (*tfjson.Plan, error) {
 	if old == nil {
 		return nil, errors.New("nil plan supplied")
 	}
@@ -18,7 +18,7 @@ func PrettyPrintPlan(old *tfjson.Plan) (*tfjson.Plan, error) {
 	}
 
 	for i := range result.ResourceChanges {
-		result.ResourceChanges[i].Change, err = prettyChange(result.ResourceChanges[i].Change)
+		result.ResourceChanges[i].Change, err = formatJsonChange(result.ResourceChanges[i].Change)
 		if err != nil {
 			return nil, err
 		}
@@ -27,17 +27,17 @@ func PrettyPrintPlan(old *tfjson.Plan) (*tfjson.Plan, error) {
 	return result, nil
 }
 
-func prettyChange(old *tfjson.Change) (*tfjson.Change, error) {
+func formatJsonChange(old *tfjson.Change) (*tfjson.Change, error) {
 	result, err := copyChange(old)
 	if err != nil {
 		return nil, err
 	}
 
-	result.Before, err = prettyChangeValue(result.Before)
+	result.Before, err = formatJsonChangeValue(result.Before)
 	if err != nil {
 		return nil, err
 	}
-	result.After, err = prettyChangeValue(result.After)
+	result.After, err = formatJsonChangeValue(result.After)
 	if err != nil {
 		return nil, err
 	}
@@ -45,11 +45,11 @@ func prettyChange(old *tfjson.Change) (*tfjson.Change, error) {
 	return result, nil
 }
 
-func prettyChangeValue(old interface{}) (interface{}, error) {
+func formatJsonChangeValue(old interface{}) (interface{}, error) {
 	switch x := old.(type) {
 	case []interface{}:
 		for i, v := range x {
-			result, err := prettyChangeValue(v)
+			result, err := formatJsonChangeValue(v)
 			if err != nil {
 				return nil, err
 			}
@@ -57,7 +57,7 @@ func prettyChangeValue(old interface{}) (interface{}, error) {
 		}
 	case map[string]interface{}:
 		for k, v := range x {
-			result, err := prettyChangeValue(v)
+			result, err := formatJsonChangeValue(v)
 			if err != nil {
 				return nil, err
 			}

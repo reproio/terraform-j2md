@@ -1,11 +1,11 @@
-package pretty_print
+package format
 
 import (
 	"reflect"
 	"testing"
 )
 
-func Test_prettyChangeValue(t *testing.T) {
+func Test_formatJsonChangeValue(t *testing.T) {
 	type args struct {
 		old interface{}
 	}
@@ -52,13 +52,13 @@ func Test_prettyChangeValue(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := prettyChangeValue(tt.args.old)
+			got, err := formatJsonChangeValue(tt.args.old)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("prettyChangeValue() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("formatJsonChangeValue() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("prettyChangeValue(): \ngot:\n%v\nwant:\n%v\n", got, tt.want)
+				t.Errorf("formatJsonChangeValue(): \ngot:\n%v\nwant:\n%v\n", got, tt.want)
 			}
 		})
 	}
