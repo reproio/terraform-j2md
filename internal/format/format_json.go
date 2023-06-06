@@ -65,7 +65,7 @@ func formatJsonChangeValue(old interface{}) (interface{}, error) {
 		}
 	case string:
 		var j json.RawMessage
-		if err := json.Unmarshal([]byte(old.(string)), &j); err == nil && json.Valid([]byte(old.(string))) {
+		if json.Valid([]byte(old.(string))) && json.Unmarshal([]byte(old.(string)), &j) == nil {
 			a, err := json.MarshalIndent(j, "", "  ")
 			if err != nil {
 				return "", err
