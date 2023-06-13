@@ -115,12 +115,12 @@ func NewPlanData(input []byte) (*PlanData, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to sanitize plan: %w", err)
 	}
-	FormattedJsonPlan, err := format.FormatJsonPlan(sanitizedPlan)
+	formattedJsonPlan, err := format.FormatJsonPlan(sanitizedPlan)
 	if err != nil {
 		return nil, fmt.Errorf("failed to prettify plan: %w", err)
 	}
 	planData := PlanData{}
-	for _, c := range FormattedJsonPlan.ResourceChanges {
+	for _, c := range formattedJsonPlan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}
