@@ -1,64 +1,87 @@
 package format
 
 import (
+	tfjson "github.com/hashicorp/terraform-json"
 	"reflect"
 	"testing"
 )
 
-func Test_formatJsonChangeValue(t *testing.T) {
+func TestFormatJsonPlan(t *testing.T) {
 	type args struct {
-		old interface{}
+		old *tfjson.Plan
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    interface{}
+		want    *tfjson.Plan
 		wantErr bool
 	}{
 		{
 			name: "plain string",
 			args: args{
-				old: "plain string",
+				old: &tfjson.Plan{
+					ResourceChanges: []*tfjson.ResourceChange{
+						{
+							Change: &tfjson.Change{
+								Before: "plain string",
+								After:  "plain string",
+							},
+						},
+					},
+				},
 			},
-			want:    "plain string",
+			want: &tfjson.Plan{
+				ResourceChanges: []*tfjson.ResourceChange{
+					{
+						Change: &tfjson.Change{
+							Before: "plain string",
+							After:  "plain string",
+						},
+					},
+				},
+			},
 			wantErr: false,
 		},
 		{
 			name: "json string",
 			args: args{
-				old: `{"foo":"bar"}`,
-			},
-			want: `{
-  "foo": "bar"
-}`,
-			wantErr: false,
-		},
-		{
-			name: "map with json string",
-			args: args{
-				old: map[string]interface{}{
-					"policy": `{"foo":"bar"}`,
-					"foo":    "bar",
+				old: &tfjson.Plan{
+					ResourceChanges: []*tfjson.ResourceChange{
+						{
+							Change: &tfjson.Change{
+								Before: `{"foo":"bar"}`,
+								After:  `{"foo":"bar"}`,
+							},
+						},
+					},
 				},
 			},
-			want: map[string]interface{}{
-				"policy": `{
+			want: &tfjson.Plan{
+				ResourceChanges: []*tfjson.ResourceChange{
+					{
+						Change: &tfjson.Change{
+							Before: `{
   "foo": "bar"
 }`,
-				"foo": "bar",
+							After: `{
+  "foo": "bar"
+}`,
+						},
+					},
+				},
 			},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := formatJsonChangeValue(tt.args.old)
+			got, err := FormatJsonPlan(tt.args.old)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("formatJsonChangeValue() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("FormatJsonPlan() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("formatJsonChangeValue(): \ngot:\n%v\nwant:\n%v\n", got, tt.want)
+				t.Errorf("FormatJsonPlan() got = \n%v\n, want \n%v", got.ResourceChanges[0].Change.After, tt.want.ResourceChanges[0].Change.After)
 			}
 		})
 	}
