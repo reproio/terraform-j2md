@@ -1,7 +1,8 @@
-package format
+package format_json_test
 
 import (
 	tfjson "github.com/hashicorp/terraform-json"
+	"github.com/reproio/terraform-j2md/internal/format"
 	"reflect"
 	"testing"
 )
@@ -75,7 +76,7 @@ func TestFormatJsonPlan(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := FormatJsonPlan(tt.args.old)
+			got, err := format.FormatJsonPlan(tt.args.old)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FormatJsonPlan() error = %v, wantErr %v", err, tt.wantErr)
 				return

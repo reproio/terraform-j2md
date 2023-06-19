@@ -1,14 +1,15 @@
-package terraform
+package plan_test
 
 import (
 	"bytes"
 	"fmt"
+	"github.com/reproio/terraform-j2md/internal/terraform"
 	"os"
 	"testing"
 )
 
 func testDataPath(name, suffix string) string {
-	return fmt.Sprintf("../../test/testdata/%s/%s", name, suffix)
+	return fmt.Sprintf("../testdata/%s/%s", name, suffix)
 }
 
 func Test_newPlanData(t *testing.T) {
@@ -36,7 +37,7 @@ func Test_newPlanData(t *testing.T) {
 				return
 			}
 
-			_, err = NewPlanData(input)
+			_, err = terraform.NewPlanData(input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewPlanData() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -69,7 +70,7 @@ func Test_render(t *testing.T) {
 				return
 			}
 
-			plan, err := NewPlanData(input)
+			plan, err := terraform.NewPlanData(input)
 			if err != nil {
 				t.Errorf("cannot parse JSON as plan: %v", err)
 				return
