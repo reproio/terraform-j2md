@@ -106,9 +106,9 @@ func (plan *PlanData) Render(w io.Writer) error {
 	return nil
 }
 
-func NewPlanData(input []byte) (*PlanData, error) {
+func NewPlanData(input io.Reader) (*PlanData, error) {
 	var plan tfjson.Plan
-	if err := json.Unmarshal(input, &plan); err != nil {
+	if err := json.NewDecoder(input).Decode(&plan); err != nil {
 		return nil, fmt.Errorf("cannot parse input: %w", err)
 	}
 	sanitizedPlan, err := sanitize.SanitizePlan(&plan)
