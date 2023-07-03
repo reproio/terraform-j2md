@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/hashicorp/terraform-json v0.14.0
-	github.com/jinzhu/copier v0.3.5
 	github.com/pmezard/go-difflib v1.0.0
 )
 
