@@ -4,45 +4,37 @@ import (
 	"encoding/json"
 	"errors"
 	tfjson "github.com/hashicorp/terraform-json"
-	"github.com/jinzhu/copier"
 )
 
-func FormatJsonPlan(old *tfjson.Plan) (*tfjson.Plan, error) {
-	if old == nil {
+func FormatJsonPlan(plan *tfjson.Plan) (*tfjson.Plan, error) {
+	var err error
+	if plan == nil {
 		return nil, errors.New("nil plan supplied")
 	}
 
-	result, err := copyPlan(old)
-	if err != nil {
-		return nil, err
-	}
-
-	for i := range result.ResourceChanges {
-		result.ResourceChanges[i].Change, err = formatJsonChange(result.ResourceChanges[i].Change)
+	for i := range plan.ResourceChanges {
+		plan.ResourceChanges[i].Change, err = formatJsonChange(plan.ResourceChanges[i].Change)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return result, nil
+	return plan, nil
 }
 
-func formatJsonChange(old *tfjson.Change) (*tfjson.Change, error) {
-	result, err := copyChange(old)
+func formatJsonChange(change *tfjson.Change) (*tfjson.Change, error) {
+	var err error
+
+	change.Before, err = formatJsonChangeValue(change.Before)
+	if err != nil {
+		return nil, err
+	}
+	change.After, err = formatJsonChangeValue(change.After)
 	if err != nil {
 		return nil, err
 	}
 
-	result.Before, err = formatJsonChangeValue(result.Before)
-	if err != nil {
-		return nil, err
-	}
-	result.After, err = formatJsonChangeValue(result.After)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return change, nil
 }
 
 func formatJsonChangeValue(old interface{}) (interface{}, error) {
@@ -75,23 +67,4 @@ func formatJsonChangeValue(old interface{}) (interface{}, error) {
 	}
 
 	return old, nil
-}
-
-func copyPlan(old *tfjson.Plan) (*tfjson.Plan, error) {
-	result := &tfjson.Plan{}
-	err := copier.CopyWithOption(result, old, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func copyChange(old *tfjson.Change) (*tfjson.Change, error) {
-	result := &tfjson.Change{}
-	err := copier.CopyWithOption(result, old, copier.Option{IgnoreEmpty: true, DeepCopy: true})
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
 }
