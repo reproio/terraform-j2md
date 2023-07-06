@@ -76,13 +76,13 @@ func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
 }
 
 func (r ResourceChangeData) Header() string {
-	var h []string
-	for _, s := range []string{r.ResourceChange.ModuleAddress, r.ResourceChange.Type, r.ResourceChange.Name} {
-		if s != "" {
-			h = append(h, s)
-		}
+	header := fmt.Sprintf("%s.%s %s", r.ResourceChange.Type, r.ResourceChange.Name, r.HeaderSuffix())
+
+	if r.ResourceChange.ModuleAddress == "" {
+		return header
+	} else {
+		return fmt.Sprintf("%s.%s", r.ResourceChange.ModuleAddress, header)
 	}
-	return fmt.Sprintf("%s %s", strings.Join(h, "."), r.HeaderSuffix())
 }
 
 func (r ResourceChangeData) HeaderSuffix() string {
