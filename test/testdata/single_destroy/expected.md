@@ -5,12 +5,13 @@
 
 ````````diff
 # null_resource.foo will be destroyed
-@@ -1,4 +1 @@
+@@ -1,5 +1,2 @@
 -{
 -  "id": "7047514762471223910",
 -  "triggers": null
 -}
 +null
+ 
 ````````
 
 </details>

@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform-json/sanitize"
@@ -52,11 +53,11 @@ type ResourceChangeData struct {
 }
 
 func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
-	before, err := json.MarshalIndent(r.ResourceChange.Change.Before, "", "  ")
+	before, err := r.marshalChangeBefore()
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (before): %w", err)
 	}
-	after, err := json.MarshalIndent(r.ResourceChange.Change.After, "", "  ")
+	after, err := r.marshalChangeAfter()
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
 	}
@@ -83,6 +84,27 @@ func (r ResourceChangeData) Header() string {
 	} else {
 		return fmt.Sprintf("%s.%s", r.ResourceChange.ModuleAddress, header)
 	}
+}
+
+func (r ResourceChangeData) marshalChangeBefore() ([]byte, error) {
+	return r.marshalChange(r.ResourceChange.Change.Before)
+}
+
+func (r ResourceChangeData) marshalChangeAfter() ([]byte, error) {
+	return r.marshalChange(r.ResourceChange.Change.After)
+}
+
+func (r ResourceChangeData) marshalChange(v any) ([]byte, error) {
+	var buffer bytes.Buffer
+	enc := json.NewEncoder(&buffer)
+	enc.SetIndent("", "  ")
+	// prevent <, >, and & from being escaped in JSON strings
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(v)
+	if err != nil {
+		return nil, err
+	}
+	return buffer.Bytes(), nil
 }
 
 func (r ResourceChangeData) HeaderSuffix() string {

@@ -5,13 +5,14 @@
 
 ````````diff
 # env_variable.test1 will be updated in-place
-@@ -1,5 +1,5 @@
+@@ -1,6 +1,6 @@
  {
    "id": "test1",
 -  "name": "test1",
 +  "name": "test1_changed",
    "value": "REDACTED_SENSITIVE"
  }
+ 
 ````````
 
 </details>
