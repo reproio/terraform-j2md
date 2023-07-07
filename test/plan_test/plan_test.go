@@ -61,6 +61,7 @@ func Test_render(t *testing.T) {
 		{name: "aws_sample", wantErr: false},
 		{name: "iam_policy", wantErr: false},
 		{name: "include_code_fence", wantErr: false},
+		{name: "include_module", wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -34,7 +34,7 @@ const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAd
 <details><summary>Change details</summary>
 {{ range .ResourceChanges }}
 {{codeFence}}diff
-# {{.ResourceChange.Type}}.{{.ResourceChange.Name}} {{.HeaderSuffix}}
+# {{.Header}}
 {{.GetUnifiedDiffString}}{{codeFence}}
 {{end}}
 </details>
@@ -73,6 +73,16 @@ func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
 	}
 
 	return diffText, nil
+}
+
+func (r ResourceChangeData) Header() string {
+	header := fmt.Sprintf("%s.%s %s", r.ResourceChange.Type, r.ResourceChange.Name, r.HeaderSuffix())
+
+	if r.ResourceChange.ModuleAddress == "" {
+		return header
+	} else {
+		return fmt.Sprintf("%s.%s", r.ResourceChange.ModuleAddress, header)
+	}
 }
 
 func (r ResourceChangeData) HeaderSuffix() string {
