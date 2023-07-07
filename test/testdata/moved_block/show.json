@@ -1,0 +1,205 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.5.3",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "env_variable.test",
+          "mode": "managed",
+          "type": "env_variable",
+          "name": "test",
+          "provider_name": "registry.terraform.io/tchupp/env",
+          "schema_version": 0,
+          "values": {
+            "id": "a83e0c130b497933b0aa",
+            "name": "a83e0c130b497933b0aa",
+            "value": ""
+          },
+          "sensitive_values": {}
+        },
+        {
+          "address": "random_id.test2",
+          "mode": "managed",
+          "type": "random_id",
+          "name": "test2",
+          "provider_name": "registry.terraform.io/hashicorp/random",
+          "schema_version": 0,
+          "values": {
+            "b64_std": "qD4MEwtJeTOwqg==",
+            "b64_url": "qD4MEwtJeTOwqg",
+            "byte_length": 10,
+            "dec": "794502137306233594687658",
+            "hex": "a83e0c130b497933b0aa",
+            "id": "qD4MEwtJeTOwqg",
+            "keepers": null,
+            "prefix": null
+          },
+          "sensitive_values": {}
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "env_variable.test",
+      "mode": "managed",
+      "type": "env_variable",
+      "name": "test",
+      "provider_name": "registry.terraform.io/tchupp/env",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "id": "a83e0c130b497933b0aa",
+          "name": "a83e0c130b497933b0aa",
+          "value": ""
+        },
+        "after": {
+          "id": "a83e0c130b497933b0aa",
+          "name": "a83e0c130b497933b0aa",
+          "value": ""
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "value": true
+        },
+        "after_sensitive": {
+          "value": true
+        }
+      }
+    },
+    {
+      "address": "random_id.test2",
+      "previous_address": "random_id.test",
+      "mode": "managed",
+      "type": "random_id",
+      "name": "test2",
+      "provider_name": "registry.terraform.io/hashicorp/random",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "b64_std": "qD4MEwtJeTOwqg==",
+          "b64_url": "qD4MEwtJeTOwqg",
+          "byte_length": 10,
+          "dec": "794502137306233594687658",
+          "hex": "a83e0c130b497933b0aa",
+          "id": "qD4MEwtJeTOwqg",
+          "keepers": null,
+          "prefix": null
+        },
+        "after": {
+          "b64_std": "qD4MEwtJeTOwqg==",
+          "b64_url": "qD4MEwtJeTOwqg",
+          "byte_length": 10,
+          "dec": "794502137306233594687658",
+          "hex": "a83e0c130b497933b0aa",
+          "id": "qD4MEwtJeTOwqg",
+          "keepers": null,
+          "prefix": null
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.5.3",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "env_variable.test",
+            "mode": "managed",
+            "type": "env_variable",
+            "name": "test",
+            "provider_name": "registry.terraform.io/tchupp/env",
+            "schema_version": 0,
+            "values": {
+              "id": "a83e0c130b497933b0aa",
+              "name": "a83e0c130b497933b0aa",
+              "value": ""
+            },
+            "sensitive_values": {
+              "value": true
+            },
+            "depends_on": [
+              "random_id.test2"
+            ]
+          },
+          {
+            "address": "random_id.test2",
+            "mode": "managed",
+            "type": "random_id",
+            "name": "test2",
+            "provider_name": "registry.terraform.io/hashicorp/random",
+            "schema_version": 0,
+            "values": {
+              "b64_std": "qD4MEwtJeTOwqg==",
+              "b64_url": "qD4MEwtJeTOwqg",
+              "byte_length": 10,
+              "dec": "794502137306233594687658",
+              "hex": "a83e0c130b497933b0aa",
+              "id": "qD4MEwtJeTOwqg",
+              "keepers": null,
+              "prefix": null
+            },
+            "sensitive_values": {}
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "env": {
+        "name": "env",
+        "full_name": "registry.terraform.io/tchupp/env",
+        "version_constraint": "0.0.2"
+      },
+      "random": {
+        "name": "random",
+        "full_name": "registry.terraform.io/hashicorp/random"
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "env_variable.test",
+          "mode": "managed",
+          "type": "env_variable",
+          "name": "test",
+          "provider_config_key": "env",
+          "expressions": {
+            "name": {
+              "references": [
+                "random_id.test2.hex",
+                "random_id.test2"
+              ]
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "random_id.test2",
+          "mode": "managed",
+          "type": "random_id",
+          "name": "test2",
+          "provider_config_key": "random",
+          "expressions": {
+            "byte_length": {
+              "constant_value": 10
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  },
+  "timestamp": "2023-08-29T08:27:04Z"
+}

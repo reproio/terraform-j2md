@@ -22,12 +22,12 @@ func main() {
 }
 
 func run() int {
-	planData, err := terraform.NewPlanData(os.Stdin)
+	planData, err := terraform.NewPlanData(os.Stdin, escapeHTML)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "cannot parse input as Terraform plan JSON: %v", err)
 		return 1
 	}
-	if err = planData.Render(os.Stdout, escapeHTML); err != nil {
+	if err = planData.Render(os.Stdout); err != nil {
 		fmt.Fprintf(os.Stderr, "cannot render: %v", err)
 		return 1
 	}

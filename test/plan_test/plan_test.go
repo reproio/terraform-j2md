@@ -3,6 +3,7 @@ package plan_test
 import (
 	"bytes"
 	"fmt"
+	"github.com/pmezard/go-difflib/difflib"
 	"github.com/reproio/terraform-j2md/internal/terraform"
 	"os"
 	"testing"
@@ -38,7 +39,7 @@ func Test_newPlanData(t *testing.T) {
 			}
 			defer file.Close()
 
-			_, err = terraform.NewPlanData(file)
+			_, err = terraform.NewPlanData(file, false)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewPlanData() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -75,14 +76,14 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file)
+				plan, err := terraform.NewPlanData(file, true)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return
 				}
 
 				got := bytes.Buffer{}
-				err = plan.Render(&got, true)
+				err = plan.Render(&got)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
 					return
@@ -96,6 +97,17 @@ func Test_render(t *testing.T) {
 				}
 				if got.String() != string(expected) {
 					t.Errorf("render() = %v, want %v", got.String(), string(expected))
+					diff := difflib.UnifiedDiff{
+						A:       difflib.SplitLines(string(expected)),
+						B:       difflib.SplitLines(got.String()),
+						Context: 3,
+					}
+
+					diffText, err := difflib.GetUnifiedDiffString(diff)
+					if err != nil {
+						t.Errorf("failed to create diff: %s", err)
+					}
+					t.Errorf("diff = \n%v", diffText)
 					return
 				}
 			})
@@ -119,14 +131,14 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file)
+				plan, err := terraform.NewPlanData(file, false)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return
 				}
 
 				got := bytes.Buffer{}
-				err = plan.Render(&got, false)
+				err = plan.Render(&got)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
 					return
@@ -140,6 +152,17 @@ func Test_render(t *testing.T) {
 				}
 				if got.String() != string(expected) {
 					t.Errorf("render() = %v, want %v", got.String(), string(expected))
+					diff := difflib.UnifiedDiff{
+						A:       difflib.SplitLines(string(expected)),
+						B:       difflib.SplitLines(got.String()),
+						Context: 3,
+					}
+
+					diffText, err := difflib.GetUnifiedDiffString(diff)
+					if err != nil {
+						t.Errorf("failed to create diff: %s", err)
+					}
+					t.Errorf("diff = \n%v", diffText)
 					return
 				}
 			})
