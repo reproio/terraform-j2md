@@ -52,6 +52,12 @@ type ResourceChangeData struct {
 	ResourceChange *tfjson.ResourceChange
 }
 
+type Config struct {
+	EscapeHTML bool
+}
+
+var config Config
+
 func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
 	before, err := r.marshalChangeBefore()
 	if err != nil {
@@ -98,8 +104,7 @@ func (r ResourceChangeData) marshalChange(v any) ([]byte, error) {
 	var buffer bytes.Buffer
 	enc := json.NewEncoder(&buffer)
 	enc.SetIndent("", "  ")
-	// prevent <, >, and & from being escaped in JSON strings
-	enc.SetEscapeHTML(false)
+	enc.SetEscapeHTML(config.EscapeHTML)
 	err := enc.Encode(v)
 	if err != nil {
 		return nil, err
@@ -121,7 +126,8 @@ func (r ResourceChangeData) HeaderSuffix() string {
 	return ""
 }
 
-func (plan *PlanData) Render(w io.Writer) error {
+func (plan *PlanData) Render(w io.Writer, escapeHTML bool) error {
+	config.EscapeHTML = escapeHTML
 	funcMap := template.FuncMap{
 		"codeFence": func() string {
 			return "````````"
