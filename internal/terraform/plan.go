@@ -78,7 +78,6 @@ func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to create diff: %w", err)
 	}
-
 	return diffText, nil
 }
 
@@ -145,20 +144,29 @@ func (plan *PlanData) Render(w io.Writer, escapeHTML bool) error {
 }
 
 func NewPlanData(input io.Reader) (*PlanData, error) {
+	var err error
 	var plan tfjson.Plan
 	if err := json.NewDecoder(input).Decode(&plan); err != nil {
 		return nil, fmt.Errorf("cannot parse input: %w", err)
 	}
+
 	sanitizedPlan, err := sanitize.SanitizePlan(&plan)
 	if err != nil {
 		return nil, fmt.Errorf("failed to sanitize plan: %w", err)
 	}
+
 	formattedJsonPlan, err := format.FormatJsonPlan(sanitizedPlan)
 	if err != nil {
 		return nil, fmt.Errorf("failed to prettify plan: %w", err)
 	}
+
+	formattedUnknownPlan, err := format.FormatUnknownPlan(formattedJsonPlan)
+	if err != nil {
+		return nil, fmt.Errorf("failed to prettify plan: %w", err)
+	}
+
 	planData := PlanData{}
-	for _, c := range formattedJsonPlan.ResourceChanges {
+	for _, c := range formattedUnknownPlan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}
