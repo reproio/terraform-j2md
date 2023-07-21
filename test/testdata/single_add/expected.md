@@ -5,11 +5,12 @@
 
 ````````diff
 # null_resource.foo will be created
-@@ -1 +1,3 @@
+@@ -1,2 +1,4 @@
 -null
 +{
 +  "triggers": null
 +}
+ 
 ````````
 
 </details>

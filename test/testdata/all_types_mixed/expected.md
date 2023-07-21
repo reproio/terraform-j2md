@@ -11,33 +11,36 @@
 
 ````````diff
 # env_variable.test2 will be updated in-place
-@@ -1,5 +1,5 @@
+@@ -1,6 +1,6 @@
  {
    "id": "test2",
 -  "name": "test2",
 +  "name": "test2_changed",
    "value": "REDACTED_SENSITIVE"
  }
+ 
 ````````
 
 ````````diff
 # env_variable.test3 will be destroyed
-@@ -1,5 +1 @@
+@@ -1,6 +1,2 @@
 -{
 -  "id": "test3",
 -  "name": "test3",
 -  "value": "REDACTED_SENSITIVE"
 -}
 +null
+ 
 ````````
 
 ````````diff
 # env_variable.test5 will be created
-@@ -1 +1,3 @@
+@@ -1,2 +1,4 @@
 -null
 +{
 +  "name": "test5"
 +}
+ 
 ````````
 
 ````````diff

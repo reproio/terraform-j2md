@@ -12,7 +12,7 @@
 
 ````````diff
 # aws_instance.test will be destroyed
-@@ -1,92 +1 @@
+@@ -1,93 +1,2 @@
 -{
 -  "ami": "ami-cbf90ecb",
 -  "arn": "arn:aws:ec2:ap-northeast-1:999999999999:instance/i-0ecc384fa6f8d0623",
@@ -106,11 +106,12 @@
 -  ]
 -}
 +null
+ 
 ````````
 
 ````````diff
 # aws_route_table.public-route will be created
-@@ -1 +1,22 @@
+@@ -1,2 +1,23 @@
 -null
 +{
 +  "route": [
@@ -134,16 +135,18 @@
 +  "timeouts": null,
 +  "vpc_id": "vpc-0c08ee65bf93a360f"
 +}
+ 
 ````````
 
 ````````diff
 # aws_route_table_association.puclic-a will be created
-@@ -1 +1,4 @@
+@@ -1,2 +1,5 @@
 -null
 +{
 +  "gateway_id": null,
 +  "subnet_id": "subnet-0342dca4d2a611266"
 +}
+ 
 ````````
 
 ````````diff

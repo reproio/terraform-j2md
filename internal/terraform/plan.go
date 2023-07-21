@@ -1,6 +1,7 @@
 package terraform
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform-json/sanitize"
@@ -51,12 +52,18 @@ type ResourceChangeData struct {
 	ResourceChange *tfjson.ResourceChange
 }
 
+type Config struct {
+	EscapeHTML bool
+}
+
+var config Config
+
 func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
-	before, err := json.MarshalIndent(r.ResourceChange.Change.Before, "", "  ")
+	before, err := r.marshalChangeBefore()
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (before): %w", err)
 	}
-	after, err := json.MarshalIndent(r.ResourceChange.Change.After, "", "  ")
+	after, err := r.marshalChangeAfter()
 	if err != nil {
 		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
 	}
@@ -85,6 +92,26 @@ func (r ResourceChangeData) Header() string {
 	}
 }
 
+func (r ResourceChangeData) marshalChangeBefore() ([]byte, error) {
+	return r.marshalChange(r.ResourceChange.Change.Before)
+}
+
+func (r ResourceChangeData) marshalChangeAfter() ([]byte, error) {
+	return r.marshalChange(r.ResourceChange.Change.After)
+}
+
+func (r ResourceChangeData) marshalChange(v any) ([]byte, error) {
+	var buffer bytes.Buffer
+	enc := json.NewEncoder(&buffer)
+	enc.SetIndent("", "  ")
+	enc.SetEscapeHTML(config.EscapeHTML)
+	err := enc.Encode(v)
+	if err != nil {
+		return nil, err
+	}
+	return buffer.Bytes(), nil
+}
+
 func (r ResourceChangeData) HeaderSuffix() string {
 	switch {
 	case r.ResourceChange.Change.Actions.Create():
@@ -99,7 +126,8 @@ func (r ResourceChangeData) HeaderSuffix() string {
 	return ""
 }
 
-func (plan *PlanData) Render(w io.Writer) error {
+func (plan *PlanData) Render(w io.Writer, escapeHTML bool) error {
+	config.EscapeHTML = escapeHTML
 	funcMap := template.FuncMap{
 		"codeFence": func() string {
 			return "````````"

@@ -5,11 +5,12 @@
 
 ````````diff
 # module.test1.env_variable.test1 will be created
-@@ -1 +1,3 @@
+@@ -1,2 +1,4 @@
 -null
 +{
 +  "name": "test1"
 +}
+ 
 ````````
 
 </details>
