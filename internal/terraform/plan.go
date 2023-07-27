@@ -143,6 +143,29 @@ func (plan *PlanData) Render(w io.Writer, escapeHTML bool) error {
 	return nil
 }
 
+func processPlan(plan *tfjson.Plan) (*tfjson.Plan, error) {
+	var err error
+
+	for i := range plan.ResourceChanges {
+		plan.ResourceChanges[i].Change, err = sanitize.SanitizeChange(plan.ResourceChanges[i].Change, sanitize.DefaultSensitiveValue)
+		if err != nil {
+			return nil, fmt.Errorf("failed to sanitize plan: %w", err)
+		}
+
+		plan.ResourceChanges[i].Change, err = format.FormatJsonChange(plan.ResourceChanges[i].Change)
+		if err != nil {
+			return nil, fmt.Errorf("failed to prettify plan: %w", err)
+		}
+
+		plan.ResourceChanges[i].Change, err = format.FormatUnknownChange(plan.ResourceChanges[i].Change)
+		if err != nil {
+			return nil, fmt.Errorf("failed to prettify plan: %w", err)
+		}
+	}
+
+	return plan, nil
+}
+
 func NewPlanData(input io.Reader) (*PlanData, error) {
 	var err error
 	var plan tfjson.Plan
@@ -150,23 +173,13 @@ func NewPlanData(input io.Reader) (*PlanData, error) {
 		return nil, fmt.Errorf("cannot parse input: %w", err)
 	}
 
-	sanitizedPlan, err := sanitize.SanitizePlan(&plan)
+	processedPlan, err := processPlan(&plan)
 	if err != nil {
-		return nil, fmt.Errorf("failed to sanitize plan: %w", err)
-	}
-
-	formattedJsonPlan, err := format.FormatJsonPlan(sanitizedPlan)
-	if err != nil {
-		return nil, fmt.Errorf("failed to prettify plan: %w", err)
-	}
-
-	formattedUnknownPlan, err := format.FormatUnknownPlan(formattedJsonPlan)
-	if err != nil {
-		return nil, fmt.Errorf("failed to prettify plan: %w", err)
+		return nil, err
 	}
 
 	planData := PlanData{}
-	for _, c := range formattedUnknownPlan.ResourceChanges {
+	for _, c := range processedPlan.ResourceChanges {
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}

@@ -9,80 +9,56 @@ import (
 
 func TestFormatJsonPlan(t *testing.T) {
 	type args struct {
-		old *tfjson.Plan
+		old *tfjson.Change
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    *tfjson.Plan
+		want    *tfjson.Change
 		wantErr bool
 	}{
 		{
 			name: "plain string",
 			args: args{
-				old: &tfjson.Plan{
-					ResourceChanges: []*tfjson.ResourceChange{
-						{
-							Change: &tfjson.Change{
-								Before: "plain string",
-								After:  "plain string",
-							},
-						},
-					},
+				old: &tfjson.Change{
+					Before: "plain string",
+					After:  "plain string",
 				},
 			},
-			want: &tfjson.Plan{
-				ResourceChanges: []*tfjson.ResourceChange{
-					{
-						Change: &tfjson.Change{
-							Before: "plain string",
-							After:  "plain string",
-						},
-					},
-				},
+			want: &tfjson.Change{
+				Before: "plain string",
+				After:  "plain string",
 			},
 			wantErr: false,
 		},
 		{
 			name: "json string",
 			args: args{
-				old: &tfjson.Plan{
-					ResourceChanges: []*tfjson.ResourceChange{
-						{
-							Change: &tfjson.Change{
-								Before: `{"foo":"bar"}`,
-								After:  `{"foo":"bar"}`,
-							},
-						},
-					},
+				old: &tfjson.Change{
+					Before: `{"foo":"bar"}`,
+					After:  `{"foo":"bar"}`,
 				},
 			},
-			want: &tfjson.Plan{
-				ResourceChanges: []*tfjson.ResourceChange{
-					{
-						Change: &tfjson.Change{
-							Before: `{
+			want: &tfjson.Change{
+				Before: `{
   "foo": "bar"
 }`,
-							After: `{
+				After: `{
   "foo": "bar"
 }`,
-						},
-					},
-				},
 			},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := format.FormatJsonPlan(tt.args.old)
+			got, err := format.FormatJsonChange(tt.args.old)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FormatJsonPlan() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("FormatJsonPlan() got = \n%v\n, want \n%v", got.ResourceChanges[0].Change.After, tt.want.ResourceChanges[0].Change.After)
+				t.Errorf("FormatJsonPlan() got = \n%v\n, want \n%v", got.After, tt.want.After)
 			}
 		})
 	}
