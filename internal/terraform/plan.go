@@ -149,17 +149,17 @@ func processPlan(plan *tfjson.Plan) (*tfjson.Plan, error) {
 	for i := range plan.ResourceChanges {
 		plan.ResourceChanges[i].Change, err = sanitize.SanitizeChange(plan.ResourceChanges[i].Change, sanitize.DefaultSensitiveValue)
 		if err != nil {
-			return nil, fmt.Errorf("failed to sanitize plan: %w", err)
+			return nil, fmt.Errorf("failed to sanitize change: %w", err)
 		}
 
 		plan.ResourceChanges[i].Change, err = format.FormatJsonChange(plan.ResourceChanges[i].Change)
 		if err != nil {
-			return nil, fmt.Errorf("failed to prettify plan: %w", err)
+			return nil, fmt.Errorf("failed to format json change: %w", err)
 		}
 
 		plan.ResourceChanges[i].Change, err = format.FormatUnknownChange(plan.ResourceChanges[i].Change)
 		if err != nil {
-			return nil, fmt.Errorf("failed to prettify plan: %w", err)
+			return nil, fmt.Errorf("failed to format unknown change: %w", err)
 		}
 	}
 
