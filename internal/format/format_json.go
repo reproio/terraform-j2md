@@ -2,27 +2,10 @@ package format
 
 import (
 	"encoding/json"
-	"errors"
 	tfjson "github.com/hashicorp/terraform-json"
 )
 
-func FormatJsonPlan(plan *tfjson.Plan) (*tfjson.Plan, error) {
-	var err error
-	if plan == nil {
-		return nil, errors.New("nil plan supplied")
-	}
-
-	for i := range plan.ResourceChanges {
-		plan.ResourceChanges[i].Change, err = formatJsonChange(plan.ResourceChanges[i].Change)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return plan, nil
-}
-
-func formatJsonChange(change *tfjson.Change) (*tfjson.Change, error) {
+func FormatJsonChange(change *tfjson.Change) (*tfjson.Change, error) {
 	var err error
 
 	change.Before, err = formatJsonChangeValue(change.Before)

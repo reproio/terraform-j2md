@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestFormatJsonPlan(t *testing.T) {
+func TestFormatUnknownPlan(t *testing.T) {
 	type args struct {
 		old *tfjson.Change
 	}
@@ -21,38 +21,34 @@ func TestFormatJsonPlan(t *testing.T) {
 			name: "plain string",
 			args: args{
 				old: &tfjson.Change{
-					Before: "plain string",
-					After:  "plain string",
+					Actions: tfjson.Actions{tfjson.ActionUpdate},
+					Before: map[string]interface{}{
+						"foo": "bar",
+					},
+					After: map[string]interface{}{},
+					AfterUnknown: map[string]interface{}{
+						"foo": true,
+					},
 				},
 			},
 			want: &tfjson.Change{
-				Before: "plain string",
-				After:  "plain string",
-			},
-			wantErr: false,
-		},
-		{
-			name: "json string",
-			args: args{
-				old: &tfjson.Change{
-					Before: `{"foo":"bar"}`,
-					After:  `{"foo":"bar"}`,
+				Actions: tfjson.Actions{tfjson.ActionUpdate},
+				Before: map[string]interface{}{
+					"foo": "bar",
 				},
-			},
-			want: &tfjson.Change{
-				Before: `{
-  "foo": "bar"
-}`,
-				After: `{
-  "foo": "bar"
-}`,
+				After: map[string]interface{}{
+					"foo": "(known after apply)",
+				},
+				AfterUnknown: map[string]interface{}{
+					"foo": true,
+				},
 			},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := format.FormatJsonChange(tt.args.old)
+			got, err := format.FormatUnknownChange(tt.args.old)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FormatJsonPlan() error = %v, wantErr %v", err, tt.wantErr)
 				return
