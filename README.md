@@ -1,5 +1,5 @@
-terraform-j2md
-===
+# terraform-j2md
+
 ![Go](https://github.com/reproio/terraform-j2md/workflows/Go/badge.svg)
 ![goreleaser](https://github.com/reproio/terraform-j2md/workflows/goreleaser/badge.svg)
 
@@ -11,18 +11,27 @@ _terraform-j2md_ is simple conversion tool, from Terraform JSON to Markdown text
 
 Output texts may be useful as pull-request comments, and so on.
 
-## How to use
+## Install
 
-### Installation
-(TBD)
+```
+% go install github.com/reproio/terraform-j2md/cmd/terraform-j2md@latest
+```
 
-### Usage
+### GitHub Actions
+
+```yaml
+- uses: reproio/terraform-j2md@main
+  with:
+    version: v0.0.5 # or latest
+```
+
+## Usage
 _terraform-j2md_ reads only standard input, write only standard output.
 ```
 terraform-j2md < [input file] > [output file]
 ```
 
-### Example
+## Example
 ````sh
 $ terraform init
 $ terraform plan -out plan.tfplan
