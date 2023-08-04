@@ -31,6 +31,6 @@ runs:
           DOWNLOAD_URL=https://github.com/reproio/terraform-j2md/releases/download/${VERSION}/terraform-j2md_Linux_x86_64.tar.gz
         fi
         cd /tmp
-        curl -sfL ${DOWNLOAD_URL} | tar xvf -
+        curl -sfL ${DOWNLOAD_URL} | tar xzvf -
         sudo install -D terraform-j2md ${RUNNER_TOOL_CACHE}/terraform-j2md/terraform-j2md
         echo "${RUNNER_TOOL_CACHE}/terraform-j2md" >> $GITHUB_PATH
