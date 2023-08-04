@@ -22,7 +22,7 @@ Output texts may be useful as pull-request comments, and so on.
 ```yaml
 - uses: reproio/terraform-j2md@main
   with:
-    version: v0.0.5 # or latest
+    version: v0.0.7 # or latest
 ```
 
 ## Usage
