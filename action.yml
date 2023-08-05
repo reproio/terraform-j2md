@@ -1,0 +1,36 @@
+name:
+description:
+inputs:
+  version:
+    description: "A version to install terraform-j2md"
+    default: latest
+    required: false
+  github-token:
+    description: ""
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      env:
+        github_token: ${{ inputs.github-token }}
+      run: |
+        set -e
+        VERSION="${{ inputs.version }}"
+        if [ -n "${{ inputs.version-file }}" ]; then
+          VERSION="v$(cat ${{ inputs.version-file }})"
+        fi
+        api_request_args=("-sS")
+        if [[ -n "$github_token" ]]; then
+          api_request_args=("${api_request_args[@]}" -H "authorization: token $github_token")
+        fi
+        if [ "${VERSION}" = "latest" ]; then
+          DOWNLOAD_URL=$(curl "${api_request_args[@]}" https://api.github.com/repos/reproio/terraform-j2md/releases | jq -r '[.[] | select(.prerelease==false)][0].assets[].browser_download_url | select(match("Linux_x86_64"))')
+        else
+          DOWNLOAD_URL=https://github.com/reproio/terraform-j2md/releases/download/${VERSION}/terraform-j2md_Linux_x86_64.tar.gz
+        fi
+        cd /tmp
+        curl -sfL ${DOWNLOAD_URL} | tar xzvf -
+        sudo install -D terraform-j2md ${RUNNER_TOOL_CACHE}/terraform-j2md/terraform-j2md
+        echo "${RUNNER_TOOL_CACHE}/terraform-j2md" >> $GITHUB_PATH
