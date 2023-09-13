@@ -60,8 +60,6 @@ type Config struct {
 	EscapeHTML bool
 }
 
-var config Config
-
 type ResourceChangeData struct {
 	ResourceChange *tfjson.ResourceChange
 	Renderer       ResourceChangeDataRenderer
@@ -75,8 +73,7 @@ func (r ResourceChangeData) Header() string {
 	return r.Renderer.Header()
 }
 
-func (plan *PlanData) Render(w io.Writer, escapeHTML bool) error {
-	config.EscapeHTML = escapeHTML
+func (plan *PlanData) Render(w io.Writer) error {
 	funcMap := template.FuncMap{
 		"codeFence": func() string {
 			return "````````"

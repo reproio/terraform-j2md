@@ -83,7 +83,7 @@ func Test_render(t *testing.T) {
 				}
 
 				got := bytes.Buffer{}
-				err = plan.Render(&got, true)
+				err = plan.Render(&got)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
 					return
@@ -127,7 +127,7 @@ func Test_render(t *testing.T) {
 				}
 
 				got := bytes.Buffer{}
-				err = plan.Render(&got, false)
+				err = plan.Render(&got)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
 					return
