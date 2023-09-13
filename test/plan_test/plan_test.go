@@ -64,6 +64,7 @@ func Test_render(t *testing.T) {
 			{name: "include_code_fence", wantErr: false},
 			{name: "include_module", wantErr: false},
 			{name: "known_after_apply", wantErr: false},
+			{name: "moved_block", wantErr: false},
 		}
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {

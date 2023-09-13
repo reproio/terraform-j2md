@@ -28,6 +28,10 @@ const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAd
 - replace{{ range .ReplacedAddresses }}
     - {{. -}}
 {{end}}{{end}}
+{{- if .MovedAddresses}}
+- moved{{ range .MovedAddresses }}
+    - {{. -}}
+{{end}}{{end}}
 {{if .ResourceChanges -}}
 <details><summary>Change details</summary>
 {{ range .ResourceChanges }}
@@ -43,6 +47,7 @@ type PlanData struct {
 	UpdatedAddresses  []string
 	DeletedAddresses  []string
 	ReplacedAddresses []string
+	MovedAddresses    []string
 	ResourceChanges   []ResourceChangeData
 }
 
@@ -125,6 +130,15 @@ func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
 
 	planData := PlanData{}
 	for _, c := range processedPlan.ResourceChanges {
+		if isMovedBlock(c) {
+			planData.MovedAddresses = append(planData.MovedAddresses, fmt.Sprintf("%s (from %s)", c.Address, c.PreviousAddress))
+			planData.ResourceChanges = append(planData.ResourceChanges, ResourceChangeData{
+				ResourceChange: c,
+				Renderer:       NewMovedBlockRenderer(c),
+			})
+			continue
+		}
+
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}
@@ -145,4 +159,8 @@ func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
 		})
 	}
 	return &planData, nil
+}
+
+func isMovedBlock(rc *tfjson.ResourceChange) bool {
+	return rc.Change.Actions.NoOp() && rc.PreviousAddress != ""
 }
