@@ -38,7 +38,7 @@ func Test_newPlanData(t *testing.T) {
 			}
 			defer file.Close()
 
-			_, err = terraform.NewPlanData(file)
+			_, err = terraform.NewPlanData(file, false)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewPlanData() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -75,7 +75,7 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file)
+				plan, err := terraform.NewPlanData(file, true)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return
@@ -119,7 +119,7 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file)
+				plan, err := terraform.NewPlanData(file, false)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return

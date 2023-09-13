@@ -22,7 +22,7 @@ func main() {
 }
 
 func run() int {
-	planData, err := terraform.NewPlanData(os.Stdin)
+	planData, err := terraform.NewPlanData(os.Stdin, escapeHTML)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "cannot parse input as Terraform plan JSON: %v", err)
 		return 1
