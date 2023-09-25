@@ -56,10 +56,6 @@ type ResourceChangeDataRenderer interface {
 	Header() string
 }
 
-type Config struct {
-	EscapeHTML bool
-}
-
 type ResourceChangeData struct {
 	ResourceChange *tfjson.ResourceChange
 	Renderer       ResourceChangeDataRenderer
