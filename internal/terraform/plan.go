@@ -1,17 +1,14 @@
 package terraform
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform-json/sanitize"
 	"github.com/reproio/terraform-j2md/internal/format"
 	"io"
-	"strings"
 	"text/template"
 
 	tfjson "github.com/hashicorp/terraform-json"
-	"github.com/pmezard/go-difflib/difflib"
 )
 
 const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAddresses}} to change, {{len .DeletedAddresses}} to destroy, {{len .ReplacedAddresses}} to replace.
@@ -31,12 +28,16 @@ const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAd
 - replace{{ range .ReplacedAddresses }}
     - {{. -}}
 {{end}}{{end}}
+{{- if .MovedAddresses}}
+- moved{{ range .MovedAddresses }}
+    - {{. -}}
+{{end}}{{end}}
 {{if .ResourceChanges -}}
 <details><summary>Change details</summary>
 {{ range .ResourceChanges }}
 {{codeFence}}diff
 # {{.Header}}
-{{.GetUnifiedDiffString}}{{codeFence}}
+{{.Render}}{{codeFence}}
 {{end}}
 </details>
 {{end}}`
@@ -46,87 +47,29 @@ type PlanData struct {
 	UpdatedAddresses  []string
 	DeletedAddresses  []string
 	ReplacedAddresses []string
+	MovedAddresses    []string
 	ResourceChanges   []ResourceChangeData
 }
+
+type ResourceChangeDataRenderer interface {
+	Render() (string, error)
+	Header() string
+}
+
 type ResourceChangeData struct {
 	ResourceChange *tfjson.ResourceChange
+	Renderer       ResourceChangeDataRenderer
 }
 
-type Config struct {
-	EscapeHTML bool
-}
-
-var config Config
-
-func (r ResourceChangeData) GetUnifiedDiffString() (string, error) {
-	before, err := r.marshalChangeBefore()
-	if err != nil {
-		return "", fmt.Errorf("invalid resource changes (before): %w", err)
-	}
-	after, err := r.marshalChangeAfter()
-	if err != nil {
-		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
-	}
-	// Try to parse JSON string in values
-	replacer := strings.NewReplacer(`\n`, "\n  ", `\"`, "\"")
-	diff := difflib.UnifiedDiff{
-		A:       difflib.SplitLines(replacer.Replace(string(before))),
-		B:       difflib.SplitLines(replacer.Replace(string(after))),
-		Context: 3,
-	}
-	diffText, err := difflib.GetUnifiedDiffString(diff)
-	if err != nil {
-		return "", fmt.Errorf("failed to create diff: %w", err)
-	}
-	return diffText, nil
+func (r ResourceChangeData) Render() (string, error) {
+	return r.Renderer.Render()
 }
 
 func (r ResourceChangeData) Header() string {
-	header := fmt.Sprintf("%s.%s %s", r.ResourceChange.Type, r.ResourceChange.Name, r.HeaderSuffix())
-
-	if r.ResourceChange.ModuleAddress == "" {
-		return header
-	} else {
-		return fmt.Sprintf("%s.%s", r.ResourceChange.ModuleAddress, header)
-	}
+	return r.Renderer.Header()
 }
 
-func (r ResourceChangeData) marshalChangeBefore() ([]byte, error) {
-	return r.marshalChange(r.ResourceChange.Change.Before)
-}
-
-func (r ResourceChangeData) marshalChangeAfter() ([]byte, error) {
-	return r.marshalChange(r.ResourceChange.Change.After)
-}
-
-func (r ResourceChangeData) marshalChange(v any) ([]byte, error) {
-	var buffer bytes.Buffer
-	enc := json.NewEncoder(&buffer)
-	enc.SetIndent("", "  ")
-	enc.SetEscapeHTML(config.EscapeHTML)
-	err := enc.Encode(v)
-	if err != nil {
-		return nil, err
-	}
-	return buffer.Bytes(), nil
-}
-
-func (r ResourceChangeData) HeaderSuffix() string {
-	switch {
-	case r.ResourceChange.Change.Actions.Create():
-		return "will be created"
-	case r.ResourceChange.Change.Actions.Update():
-		return "will be updated in-place"
-	case r.ResourceChange.Change.Actions.Delete():
-		return "will be destroyed"
-	case r.ResourceChange.Change.Actions.Replace():
-		return "will be replaced"
-	}
-	return ""
-}
-
-func (plan *PlanData) Render(w io.Writer, escapeHTML bool) error {
-	config.EscapeHTML = escapeHTML
+func (plan *PlanData) Render(w io.Writer) error {
 	funcMap := template.FuncMap{
 		"codeFence": func() string {
 			return "````````"
@@ -166,7 +109,7 @@ func processPlan(plan *tfjson.Plan) (*tfjson.Plan, error) {
 	return plan, nil
 }
 
-func NewPlanData(input io.Reader) (*PlanData, error) {
+func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
 	var err error
 	var plan tfjson.Plan
 	if err := json.NewDecoder(input).Decode(&plan); err != nil {
@@ -180,6 +123,15 @@ func NewPlanData(input io.Reader) (*PlanData, error) {
 
 	planData := PlanData{}
 	for _, c := range processedPlan.ResourceChanges {
+		if isMovedBlock(c) {
+			planData.MovedAddresses = append(planData.MovedAddresses, fmt.Sprintf("%s (from %s)", c.Address, c.PreviousAddress))
+			planData.ResourceChanges = append(planData.ResourceChanges, ResourceChangeData{
+				ResourceChange: c,
+				Renderer:       NewMovedBlockRenderer(c),
+			})
+			continue
+		}
+
 		if c.Change.Actions.NoOp() || c.Change.Actions.Read() {
 			continue
 		}
@@ -196,7 +148,12 @@ func NewPlanData(input io.Reader) (*PlanData, error) {
 		}
 		planData.ResourceChanges = append(planData.ResourceChanges, ResourceChangeData{
 			ResourceChange: c,
+			Renderer:       NewUnifiedDiffRenderer(c, escapeHTML),
 		})
 	}
 	return &planData, nil
+}
+
+func isMovedBlock(rc *tfjson.ResourceChange) bool {
+	return rc.Change.Actions.NoOp() && rc.PreviousAddress != ""
 }

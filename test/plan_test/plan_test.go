@@ -38,7 +38,7 @@ func Test_newPlanData(t *testing.T) {
 			}
 			defer file.Close()
 
-			_, err = terraform.NewPlanData(file)
+			_, err = terraform.NewPlanData(file, false)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewPlanData() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -64,6 +64,7 @@ func Test_render(t *testing.T) {
 			{name: "include_code_fence", wantErr: false},
 			{name: "include_module", wantErr: false},
 			{name: "known_after_apply", wantErr: false},
+			{name: "moved_block", wantErr: false},
 		}
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
@@ -75,14 +76,14 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file)
+				plan, err := terraform.NewPlanData(file, true)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return
 				}
 
 				got := bytes.Buffer{}
-				err = plan.Render(&got, true)
+				err = plan.Render(&got)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
 					return
@@ -119,14 +120,14 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file)
+				plan, err := terraform.NewPlanData(file, false)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return
 				}
 
 				got := bytes.Buffer{}
-				err = plan.Render(&got, false)
+				err = plan.Render(&got)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("render() error = %v, wantErr %v", err, tt.wantErr)
 					return
