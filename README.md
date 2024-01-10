@@ -20,7 +20,7 @@ Output texts may be useful as pull-request comments, and so on.
 ### GitHub Actions
 
 ```yaml
-- uses: reproio/terraform-j2md@main
+- uses: reproio/terraform-j2md@master
   with:
     version: v0.0.7 # or latest
 ```
