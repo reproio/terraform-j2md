@@ -81,7 +81,7 @@ func (plan *PlanData) Render(w io.Writer) error {
 		return fmt.Errorf("invalid template text: %w", err)
 	}
 
-	if err := planTemplate.Execute(w, plan); err != nil {
+	if err = planTemplate.Execute(w, plan); err != nil {
 		return fmt.Errorf("failed to render template: %w", err)
 	}
 	return nil
