@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/reproio/terraform-j2md/internal/terraform"
+	"github.com/reproio/terraform-j2md/pkg/terraform"
 )
 
 var (
