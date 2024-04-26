@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-json/sanitize"
 	"github.com/reproio/terraform-j2md/internal/format"
+	"github.com/reproio/terraform-j2md/internal/render"
 	"io"
 	"text/template"
 
@@ -127,7 +128,7 @@ func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
 			planData.MovedAddresses = append(planData.MovedAddresses, fmt.Sprintf("%s (from %s)", c.Address, c.PreviousAddress))
 			planData.ResourceChanges = append(planData.ResourceChanges, ResourceChangeData{
 				ResourceChange: c,
-				Renderer:       NewMovedBlockRenderer(c),
+				Renderer:       render.NewMovedBlockRenderer(c),
 			})
 			continue
 		}
@@ -148,7 +149,7 @@ func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
 		}
 		planData.ResourceChanges = append(planData.ResourceChanges, ResourceChangeData{
 			ResourceChange: c,
-			Renderer:       NewUnifiedDiffRenderer(c, escapeHTML),
+			Renderer:       render.NewUnifiedDiffRenderer(c, escapeHTML),
 		})
 	}
 	return &planData, nil
