@@ -43,13 +43,9 @@ func (r *UnifiedDiffRenderer) Render() (string, error) {
 }
 
 func (r *UnifiedDiffRenderer) Header() string {
-	header := fmt.Sprintf("%s.%s %s", r.ResourceChange.Type, r.ResourceChange.Name, r.headerSuffix())
+	header := fmt.Sprintf("%s %s", r.ResourceChange.Address, r.headerSuffix())
 
-	if r.ResourceChange.ModuleAddress == "" {
-		return header
-	} else {
-		return fmt.Sprintf("%s.%s", r.ResourceChange.ModuleAddress, header)
-	}
+	return header
 }
 
 func (r *UnifiedDiffRenderer) headerSuffix() string {
