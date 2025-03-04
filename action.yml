@@ -1,4 +1,4 @@
-name: Terraform J2MD
+name: terraform-j2md
 description: Install terraform-j2md
 inputs:
   version:
