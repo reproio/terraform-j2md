@@ -1,12 +1,15 @@
-name:
-description:
+name: terraform-j2md
+description: Install terraform-j2md
 inputs:
   version:
     description: "A version to install terraform-j2md"
     default: latest
     required: false
+  version-file:
+    description: "A file containing the version to install"
+    required: false
   github-token:
-    description: ""
+    description: "GitHub token for API requests"
     required: false
     default: ${{ github.token }}
 runs:
@@ -21,16 +24,39 @@ runs:
         if [ -n "${{ inputs.version-file }}" ]; then
           VERSION="v$(cat ${{ inputs.version-file }})"
         fi
+        
+        # Detect architecture
+        ARCH=$(uname -m)
+        
+        # Map architecture to terraform-j2md naming convention
+        case "${ARCH}" in
+          x86_64|amd64)  ARCH_NAME="x86_64";;
+          i386|i686)     ARCH_NAME="i386";;
+          arm64|aarch64) ARCH_NAME="arm64";;
+          *)             echo "Unsupported architecture: ${ARCH}" && exit 1;;
+        esac
+        
+        BINARY_NAME="terraform-j2md_Linux_${ARCH_NAME}.tar.gz"
+        
         api_request_args=("-sS")
         if [[ -n "$github_token" ]]; then
           api_request_args=("${api_request_args[@]}" -H "authorization: token $github_token")
         fi
+        
         if [ "${VERSION}" = "latest" ]; then
-          DOWNLOAD_URL=$(curl "${api_request_args[@]}" https://api.github.com/repos/reproio/terraform-j2md/releases | jq -r '[.[] | select(.prerelease==false)][0].assets[].browser_download_url | select(match("Linux_x86_64"))')
+          DOWNLOAD_URL=$(curl "${api_request_args[@]}" https://api.github.com/repos/reproio/terraform-j2md/releases | jq -r "[.[] | select(.prerelease==false)][0].assets[].browser_download_url | select(match(\"${BINARY_NAME}\"))")
         else
-          DOWNLOAD_URL=https://github.com/reproio/terraform-j2md/releases/download/${VERSION}/terraform-j2md_Linux_x86_64.tar.gz
+          DOWNLOAD_URL=https://github.com/reproio/terraform-j2md/releases/download/${VERSION}/${BINARY_NAME}
         fi
+        
+        echo "Downloading terraform-j2md for Linux_${ARCH_NAME} from ${DOWNLOAD_URL}"
+        
         cd /tmp
         curl -sfL ${DOWNLOAD_URL} | tar xzvf -
+        
+        # Create directory if it doesn't exist
+        mkdir -p ${RUNNER_TOOL_CACHE}/terraform-j2md
+        
+        # Install the binary
         sudo install -D terraform-j2md ${RUNNER_TOOL_CACHE}/terraform-j2md/terraform-j2md
         echo "${RUNNER_TOOL_CACHE}/terraform-j2md" >> $GITHUB_PATH
