@@ -2,7 +2,7 @@ module github.com/reproio/terraform-j2md
 
 go 1.22
 
-toolchain go1.22.4
+toolchain go1.24.1
 
 require (
 	github.com/hashicorp/terraform-json v0.17.2-0.20230912071934-9901d28699bc
