@@ -32,7 +32,22 @@ const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAd
 - moved{{ range .MovedAddresses }}
     - {{. -}}
 {{end}}{{end}}
-{{if .ResourceChanges -}}
+{{- if .DriftedAddresses}}
+
+### ⚠️ Drift Detected ({{len .DriftedAddresses}} {{if eq (len .DriftedAddresses) 1}}resource{{else}}resources{{end}})
+{{- range .DriftedAddresses}}
+- {{. -}}
+{{end}}{{end}}
+{{- if .ResourceDrift}}
+<details><summary>Drift details</summary>
+{{ range .ResourceDrift }}
+{{codeFence}}diff
+# {{.Header}}
+{{.Render}}{{codeFence}}
+{{end}}
+</details>
+{{end}}
+{{- if .ResourceChanges}}
 <details><summary>Change details</summary>
 {{ range .ResourceChanges }}
 {{codeFence}}diff
@@ -40,6 +55,8 @@ const planTemplateBody = `### {{len .CreatedAddresses}} to add, {{len .UpdatedAd
 {{.Render}}{{codeFence}}
 {{end}}
 </details>
+{{end}}
+{{- if not (or .ResourceDrift .ResourceChanges)}}
 {{end}}`
 
 type PlanData struct {
@@ -48,7 +65,9 @@ type PlanData struct {
 	DeletedAddresses  []string
 	ReplacedAddresses []string
 	MovedAddresses    []string
+	DriftedAddresses  []string
 	ResourceChanges   []ResourceChangeData
+	ResourceDrift     []ResourceChangeData
 }
 
 type ResourceChangeDataRenderer interface {
@@ -106,6 +125,23 @@ func processPlan(plan *tfjson.Plan) (*tfjson.Plan, error) {
 		}
 	}
 
+	for i := range plan.ResourceDrift {
+		plan.ResourceDrift[i].Change, err = sanitize.SanitizeChange(plan.ResourceDrift[i].Change, sanitize.DefaultSensitiveValue)
+		if err != nil {
+			return nil, fmt.Errorf("failed to sanitize drift: %w", err)
+		}
+
+		plan.ResourceDrift[i].Change, err = format.FormatJsonChange(plan.ResourceDrift[i].Change)
+		if err != nil {
+			return nil, fmt.Errorf("failed to format json drift: %w", err)
+		}
+
+		plan.ResourceDrift[i].Change, err = format.FormatUnknownChange(plan.ResourceDrift[i].Change)
+		if err != nil {
+			return nil, fmt.Errorf("failed to format unknown drift: %w", err)
+		}
+	}
+
 	return plan, nil
 }
 
@@ -151,6 +187,21 @@ func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
 			Renderer:       NewUnifiedDiffRenderer(c, escapeHTML),
 		})
 	}
+
+	// Process resource drift
+	for _, d := range processedPlan.ResourceDrift {
+		// Skip no-op drift (shouldn't happen, but be safe)
+		if d.Change.Actions.NoOp() {
+			continue
+		}
+
+		planData.DriftedAddresses = append(planData.DriftedAddresses, d.Address)
+		planData.ResourceDrift = append(planData.ResourceDrift, ResourceChangeData{
+			ResourceChange: d,
+			Renderer:       NewDriftRenderer(d, escapeHTML),
+		})
+	}
+
 	return &planData, nil
 }
 

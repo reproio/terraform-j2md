@@ -25,6 +25,7 @@ func Test_newPlanData(t *testing.T) {
 		{name: "all_types_mixed", wantErr: false},
 		{name: "aws_sample", wantErr: false},
 		{name: "iam_policy", wantErr: false},
+		{name: "drift_only", wantErr: false},
 		{name: "invalid_json", wantErr: true},
 		{name: "not_json", wantErr: true},
 	}
@@ -61,6 +62,7 @@ func Test_render(t *testing.T) {
 			{name: "all_types_mixed", wantErr: false},
 			{name: "aws_sample", wantErr: false},
 			{name: "iam_policy", wantErr: false},
+			{name: "drift_only", wantErr: false},
 			{name: "include_code_fence", wantErr: false},
 			{name: "include_module", wantErr: false},
 			{name: "known_after_apply", wantErr: false},
