@@ -31,6 +31,10 @@ _terraform-j2md_ reads only standard input, write only standard output.
 terraform-j2md < [input file] > [output file]
 ```
 
+### Options
+- `--no-escape-html`: prevent `<`, `>`, and `&` from being escaped in JSON strings.
+- `--no-drift`: omit the drift detection section from the output. Drift (resources changed outside Terraform) is shown by default whenever the plan reports it.
+
 ## Example
 ````sh
 $ terraform init

@@ -145,7 +145,7 @@ func processPlan(plan *tfjson.Plan) (*tfjson.Plan, error) {
 	return plan, nil
 }
 
-func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
+func NewPlanData(input io.Reader, escapeHTML bool, showDrift bool) (*PlanData, error) {
 	var err error
 	var plan tfjson.Plan
 	if err := json.NewDecoder(input).Decode(&plan); err != nil {
@@ -188,18 +188,20 @@ func NewPlanData(input io.Reader, escapeHTML bool) (*PlanData, error) {
 		})
 	}
 
-	// Process resource drift
-	for _, d := range processedPlan.ResourceDrift {
-		// Skip no-op drift (shouldn't happen, but be safe)
-		if d.Change.Actions.NoOp() {
-			continue
-		}
+	// Process resource drift (skipped when disabled via --no-drift)
+	if showDrift {
+		for _, d := range processedPlan.ResourceDrift {
+			// Skip no-op drift (shouldn't happen, but be safe)
+			if d.Change.Actions.NoOp() {
+				continue
+			}
 
-		planData.DriftedAddresses = append(planData.DriftedAddresses, d.Address)
-		planData.ResourceDrift = append(planData.ResourceDrift, ResourceChangeData{
-			ResourceChange: d,
-			Renderer:       NewDriftRenderer(d, escapeHTML),
-		})
+			planData.DriftedAddresses = append(planData.DriftedAddresses, d.Address)
+			planData.ResourceDrift = append(planData.ResourceDrift, ResourceChangeData{
+				ResourceChange: d,
+				Renderer:       NewDriftRenderer(d, escapeHTML),
+			})
+		}
 	}
 
 	return &planData, nil
