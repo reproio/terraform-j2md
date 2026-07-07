@@ -1,0 +1,205 @@
+{
+  "format_version": "1.0",
+  "terraform_version": "1.5.0",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_instance.web",
+          "mode": "managed",
+          "type": "aws_instance",
+          "name": "web",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 1,
+          "values": {
+            "ami": "ami-12345678",
+            "instance_type": "t2.micro",
+            "tags": {
+              "Name": "web-server",
+              "Environment": "production"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [],
+  "resource_drift": [
+    {
+      "address": "aws_instance.web",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "web",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "ami": "ami-12345678",
+          "arn": "arn:aws:ec2:us-east-1:123456789012:instance/i-1234567890abcdef0",
+          "id": "i-1234567890abcdef0",
+          "instance_type": "t2.micro",
+          "tags": {
+            "Name": "web-server"
+          }
+        },
+        "after": {
+          "ami": "ami-12345678",
+          "arn": "arn:aws:ec2:us-east-1:123456789012:instance/i-1234567890abcdef0",
+          "id": "i-1234567890abcdef0",
+          "instance_type": "t2.micro",
+          "tags": {
+            "Name": "web-server",
+            "Environment": "production"
+          }
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_security_group.allow_http",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "allow_http",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "id": "sg-0123456789abcdef0",
+          "name": "allow_http",
+          "description": "Allow HTTP traffic",
+          "ingress": [
+            {
+              "from_port": 80,
+              "to_port": 80,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ]
+            }
+          ]
+        },
+        "after": {
+          "id": "sg-0123456789abcdef0",
+          "name": "allow_http",
+          "description": "Allow HTTP traffic",
+          "ingress": [
+            {
+              "from_port": 80,
+              "to_port": 80,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ]
+            },
+            {
+              "from_port": 443,
+              "to_port": 443,
+              "protocol": "tcp",
+              "cidr_blocks": [
+                "0.0.0.0/0"
+              ]
+            }
+          ]
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.5.0",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "aws_instance.web",
+            "mode": "managed",
+            "type": "aws_instance",
+            "name": "web",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 1,
+            "values": {
+              "ami": "ami-12345678",
+              "id": "i-1234567890abcdef0",
+              "instance_type": "t2.micro",
+              "tags": {
+                "Name": "web-server"
+              }
+            }
+          },
+          {
+            "address": "aws_security_group.allow_http",
+            "mode": "managed",
+            "type": "aws_security_group",
+            "name": "allow_http",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 1,
+            "values": {
+              "id": "sg-0123456789abcdef0",
+              "name": "allow_http",
+              "description": "Allow HTTP traffic"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "version_constraint": "~> 5.0"
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_instance.web",
+          "mode": "managed",
+          "type": "aws_instance",
+          "name": "web",
+          "provider_config_key": "aws",
+          "expressions": {
+            "ami": {
+              "constant_value": "ami-12345678"
+            },
+            "instance_type": {
+              "constant_value": "t2.micro"
+            },
+            "tags": {
+              "constant_value": {
+                "Name": "web-server",
+                "Environment": "production"
+              }
+            }
+          },
+          "schema_version": 1
+        },
+        {
+          "address": "aws_security_group.allow_http",
+          "mode": "managed",
+          "type": "aws_security_group",
+          "name": "allow_http",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "constant_value": "allow_http"
+            },
+            "description": {
+              "constant_value": "Allow HTTP traffic"
+            }
+          },
+          "schema_version": 1
+        }
+      ]
+    }
+  }
+}

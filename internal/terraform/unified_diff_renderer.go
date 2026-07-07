@@ -19,20 +19,33 @@ func NewUnifiedDiffRenderer(resourceChange *tfjson.ResourceChange, enableEscapeH
 }
 
 func (r *UnifiedDiffRenderer) Render() (string, error) {
-	before, err := r.marshalChangeBefore()
+	return renderUnifiedDiff(r.ResourceChange, r.EnableEscapeHTML, 3, false)
+}
+
+// renderUnifiedDiff renders a resource change's before/after as a unified diff.
+// context is the number of unchanged surrounding lines to show. Shared by the
+// resource-change and drift renderers.
+//
+// trimTrailingNewline drops the newline json.Encode appends. Drift needs this:
+// at high Context, SplitLines on a newline-terminated string yields a trailing
+// empty element that surfaces as a spurious diff line. The change renderer must
+// NOT trim — it would alter existing (upstream) change output for resources
+// whose change lands within Context lines of the end.
+func renderUnifiedDiff(rc *tfjson.ResourceChange, escapeHTML bool, context int, trimTrailingNewline bool) (string, error) {
+	before, err := marshalDiffValue(rc.Change.Before, escapeHTML, trimTrailingNewline)
 	if err != nil {
-		return "", fmt.Errorf("invalid resource changes (before): %w", err)
+		return "", fmt.Errorf("invalid resource change (before): %w", err)
 	}
-	after, err := r.marshalChangeAfter()
+	after, err := marshalDiffValue(rc.Change.After, escapeHTML, trimTrailingNewline)
 	if err != nil {
-		return "", fmt.Errorf("invalid resource changes (after) : %w", err)
+		return "", fmt.Errorf("invalid resource change (after): %w", err)
 	}
 	// Try to parse JSON string in values
 	replacer := strings.NewReplacer(`\n`, "\n  ", `\"`, "\"")
 	diff := difflib.UnifiedDiff{
 		A:       difflib.SplitLines(replacer.Replace(string(before))),
 		B:       difflib.SplitLines(replacer.Replace(string(after))),
-		Context: 3,
+		Context: context,
 	}
 	diffText, err := difflib.GetUnifiedDiffString(diff)
 	if err != nil {
@@ -40,6 +53,20 @@ func (r *UnifiedDiffRenderer) Render() (string, error) {
 	}
 
 	return diffText, nil
+}
+
+func marshalDiffValue(v any, escapeHTML, trimTrailingNewline bool) ([]byte, error) {
+	var buffer bytes.Buffer
+	enc := json.NewEncoder(&buffer)
+	enc.SetIndent("", "  ")
+	enc.SetEscapeHTML(escapeHTML)
+	if err := enc.Encode(v); err != nil {
+		return nil, err
+	}
+	if trimTrailingNewline {
+		return bytes.TrimRight(buffer.Bytes(), "\n"), nil
+	}
+	return buffer.Bytes(), nil
 }
 
 func (r *UnifiedDiffRenderer) Header() string {
@@ -60,24 +87,4 @@ func (r *UnifiedDiffRenderer) headerSuffix() string {
 		return "will be replaced"
 	}
 	return ""
-}
-
-func (r *UnifiedDiffRenderer) marshalChangeBefore() ([]byte, error) {
-	return r.marshalChange(r.ResourceChange.Change.Before)
-}
-
-func (r *UnifiedDiffRenderer) marshalChangeAfter() ([]byte, error) {
-	return r.marshalChange(r.ResourceChange.Change.After)
-}
-
-func (r *UnifiedDiffRenderer) marshalChange(v any) ([]byte, error) {
-	var buffer bytes.Buffer
-	enc := json.NewEncoder(&buffer)
-	enc.SetIndent("", "  ")
-	enc.SetEscapeHTML(r.EnableEscapeHTML)
-	err := enc.Encode(v)
-	if err != nil {
-		return nil, err
-	}
-	return buffer.Bytes(), nil
 }

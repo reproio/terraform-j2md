@@ -8,6 +8,128 @@
     - aws_instance.test
 - replace
     - aws_security_group.admin
+
+### ⚠️ Drift Detected (4 resources)
+- aws_internet_gateway.myGW
+- aws_key_pair.my-key-pair
+- aws_security_group.admin
+- aws_vpc.myVPC
+<details><summary>Drift details</summary>
+
+````````diff
+# aws_internet_gateway.myGW has drifted from state
+@@ -1,8 +1,8 @@
+ {
+   "arn": "arn:aws:ec2:ap-northeast-1:999999999999:internet-gateway/igw-0edc99b3ee0ed84ad",
+   "id": "igw-0edc99b3ee0ed84ad",
+   "owner_id": "999999999999",
+-  "tags": null,
++  "tags": {},
+   "tags_all": {},
+   "vpc_id": "vpc-0c08ee65bf93a360f"
+ }
+````````
+
+````````diff
+# aws_key_pair.my-key-pair has drifted from state
+@@ -1,11 +1,11 @@
+ {
+   "arn": "arn:aws:ec2:ap-northeast-1:999999999999:key-pair/id_rsa_ec2",
+   "fingerprint": "f9:95:17:a6:4d:1d:be:60:54:fa:a5:51:df:16:40:56",
+   "id": "id_rsa_ec2",
+   "key_name": "id_rsa_ec2",
+   "key_name_prefix": "",
+   "key_pair_id": "key-0f1fe4f4c50caede6",
+   "public_key": "ssh-rsa XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+-  "tags": null,
++  "tags": {},
+   "tags_all": {}
+ }
+````````
+
+````````diff
+# aws_security_group.admin has drifted from state
+@@ -1,43 +1,43 @@
+ {
+   "arn": "arn:aws:ec2:ap-northeast-1:999999999999:security-group/sg-05bf69021f9e927aa",
+   "description": "test",
+   "egress": [
+     {
+       "cidr_blocks": [
+         "0.0.0.0/0"
+       ],
+       "description": "",
+       "from_port": 0,
+       "ipv6_cidr_blocks": [],
+       "prefix_list_ids": [],
+       "protocol": "-1",
+       "security_groups": [],
+       "self": false,
+       "to_port": 0
+     }
+   ],
+   "id": "sg-05bf69021f9e927aa",
+   "ingress": [
+     {
+       "cidr_blocks": [
+         "0.0.0.0/0"
+       ],
+       "description": "",
+       "from_port": 22,
+       "ipv6_cidr_blocks": [],
+       "prefix_list_ids": [],
+       "protocol": "tcp",
+       "security_groups": [],
+       "self": false,
+       "to_port": 22
+     }
+   ],
+   "name": "admin",
+   "name_prefix": "",
+   "owner_id": "999999999999",
+   "revoke_rules_on_delete": false,
+-  "tags": null,
++  "tags": {},
+   "tags_all": {},
+   "timeouts": null,
+   "vpc_id": "vpc-0c08ee65bf93a360f"
+ }
+````````
+
+````````diff
+# aws_vpc.myVPC has drifted from state
+@@ -1,26 +1,26 @@
+ {
+   "arn": "arn:aws:ec2:ap-northeast-1:999999999999:vpc/vpc-0c08ee65bf93a360f",
+   "assign_generated_ipv6_cidr_block": false,
+   "cidr_block": "10.1.0.0/16",
+   "default_network_acl_id": "acl-044c353daa9d7d946",
+   "default_route_table_id": "rtb-024550946eba617ac",
+   "default_security_group_id": "sg-03e2efb1831bb7701",
+   "dhcp_options_id": "dopt-001eeab035675bf4c",
+   "enable_classiclink": false,
+   "enable_classiclink_dns_support": false,
+   "enable_dns_hostnames": false,
+   "enable_dns_support": true,
+   "id": "vpc-0c08ee65bf93a360f",
+   "instance_tenancy": "default",
+   "ipv4_ipam_pool_id": null,
+   "ipv4_netmask_length": null,
+   "ipv6_association_id": "",
+   "ipv6_cidr_block": "",
+   "ipv6_cidr_block_network_border_group": "",
+   "ipv6_ipam_pool_id": "",
+   "ipv6_netmask_length": 0,
+   "main_route_table_id": "rtb-024550946eba617ac",
+   "owner_id": "999999999999",
+-  "tags": null,
++  "tags": {},
+   "tags_all": {}
+ }
+````````
+
+</details>
+
 <details><summary>Change details</summary>
 
 ````````diff

@@ -1,0 +1,42 @@
+aws_instance.web: Refreshing state... [id=i-1234567890abcdef0]
+aws_security_group.allow_http: Refreshing state... [id=sg-0123456789abcdef0]
+
+Note: Objects have changed outside of Terraform
+
+Terraform detected the following changes made outside of Terraform since the last "terraform apply":
+
+  # aws_instance.web has changed
+  ~ resource "aws_instance" "web" {
+        id            = "i-1234567890abcdef0"
+      ~ tags          = {
+          + "Environment" = "production"
+            "Name"        = "web-server"
+        }
+        # (5 unchanged attributes hidden)
+    }
+
+  # aws_security_group.allow_http has changed
+  ~ resource "aws_security_group" "allow_http" {
+        id          = "sg-0123456789abcdef0"
+        name        = "allow_http"
+      + ingress {
+          + cidr_blocks      = [
+              + "0.0.0.0/0",
+            ]
+          + from_port        = 443
+          + protocol         = "tcp"
+          + to_port          = 443
+        }
+        # (3 unchanged attributes hidden)
+    }
+
+Unless you have made equivalent changes to your configuration, or ignored the relevant attributes using ignore_changes,
+the following plan may include actions to undo or respond to these changes.
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+No changes. Your infrastructure matches the configuration.
+
+Your configuration already matches the changes detected above. If you'd like to update the Terraform state to match,
+create and apply a refresh-only plan:
+  terraform apply -refresh-only

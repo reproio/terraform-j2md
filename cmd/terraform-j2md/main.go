@@ -10,19 +10,24 @@ import (
 
 var (
 	escapeHTML = true
+	showDrift  = true
 )
 
 func main() {
 	noEscapeHTML := flag.Bool("no-escape-html", false, "prevent <, >, and & from being escaped in JSON strings")
+	noDrift := flag.Bool("no-drift", false, "omit the drift detection section from the output")
 	flag.Parse()
 	if *noEscapeHTML {
 		escapeHTML = false
+	}
+	if *noDrift {
+		showDrift = false
 	}
 	os.Exit(run())
 }
 
 func run() int {
-	planData, err := terraform.NewPlanData(os.Stdin, escapeHTML)
+	planData, err := terraform.NewPlanData(os.Stdin, escapeHTML, showDrift)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "cannot parse input as Terraform plan JSON: %v", err)
 		return 1

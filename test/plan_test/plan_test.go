@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/reproio/terraform-j2md/internal/terraform"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -25,6 +26,7 @@ func Test_newPlanData(t *testing.T) {
 		{name: "all_types_mixed", wantErr: false},
 		{name: "aws_sample", wantErr: false},
 		{name: "iam_policy", wantErr: false},
+		{name: "drift_only", wantErr: false},
 		{name: "invalid_json", wantErr: true},
 		{name: "not_json", wantErr: true},
 	}
@@ -38,12 +40,37 @@ func Test_newPlanData(t *testing.T) {
 			}
 			defer file.Close()
 
-			_, err = terraform.NewPlanData(file, false)
+			_, err = terraform.NewPlanData(file, false, true)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewPlanData() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
+	}
+}
+
+func Test_render_noDrift(t *testing.T) {
+	// drift_only has drift but no planned changes; with drift disabled the
+	// output must contain no drift section.
+	inputFilePath := testDataPath("drift_only", "show.json")
+	file, err := os.Open(inputFilePath)
+	if err != nil {
+		t.Fatalf("cannot open input file: %s", inputFilePath)
+	}
+	defer file.Close()
+
+	plan, err := terraform.NewPlanData(file, true, false)
+	if err != nil {
+		t.Fatalf("cannot parse JSON as plan: %v", err)
+	}
+
+	got := bytes.Buffer{}
+	if err := plan.Render(&got); err != nil {
+		t.Fatalf("render() error = %v", err)
+	}
+
+	if strings.Contains(got.String(), "Drift Detected") {
+		t.Errorf("render() with drift disabled still contains drift section:\n%s", got.String())
 	}
 }
 
@@ -61,6 +88,7 @@ func Test_render(t *testing.T) {
 			{name: "all_types_mixed", wantErr: false},
 			{name: "aws_sample", wantErr: false},
 			{name: "iam_policy", wantErr: false},
+			{name: "drift_only", wantErr: false},
 			{name: "include_code_fence", wantErr: false},
 			{name: "include_module", wantErr: false},
 			{name: "known_after_apply", wantErr: false},
@@ -77,7 +105,7 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file, true)
+				plan, err := terraform.NewPlanData(file, true, true)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return
@@ -121,7 +149,7 @@ func Test_render(t *testing.T) {
 				}
 				defer file.Close()
 
-				plan, err := terraform.NewPlanData(file, false)
+				plan, err := terraform.NewPlanData(file, false, true)
 				if err != nil {
 					t.Errorf("cannot parse JSON as plan: %v", err)
 					return
